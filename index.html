@@ -746,64 +746,106 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
 })();
 </script>
 
-<script>
+
+
+<script id="mealpilot-v151-safe">
 (function(){
- const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
- function recipes(){return window.recipes||window.RECIPES||window.recipeData||[]}
- function getPlan(){
-  const keys=['mealpilot_plan','plan','weeklyPlan'];
-  for(const k of keys){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v)return {k,v}}catch(e){}}
-  return null;
- }
- function savePlan(k,v){localStorage.setItem(k,JSON.stringify(v))}
- function openPicker(id){
-  const m=document.createElement('div');m.className='mp15-modal';
-  m.innerHTML='<div class="mp15-picker"><h2>Add to your week</h2><p>Choose where you want this recipe.</p><div class="mp15-days">'+DAYS.map((d,i)=>'<button class="mp15-day" data-i="'+i+'"><b>'+d+'</b><span>Tap to add meal</span></button>').join('')+'</div><button class="mp15-cancel">Cancel</button></div>';
-  document.body.appendChild(m);
-  m.querySelector('.mp15-cancel').onclick=()=>m.remove();
-  m.querySelectorAll('.mp15-day').forEach(b=>b.onclick=()=>{
-    const day=DAYS[Number(b.dataset.i)];
-    const info=getPlan();
-    if(info && info.v){
-      let p=info.v;
-      if(Array.isArray(p)){
-        p[Number(b.dataset.i)]=id;
-      }else if(typeof p==='object'){
-        p[day]=id;
-      }
-      savePlan(info.k,p);
+  "use strict";
+  try {
+    var DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+    function allRecipes(){
+      try {
+        var r=window.recipes||window.RECIPES||window.recipeData||[];
+        return Array.isArray(r)?r:[];
+      } catch(e){ return []; }
     }
-    localStorage.setItem('mealpilot_selected_day_v15',day);
-    localStorage.setItem('mealpilot_selected_recipe_v15',String(id));
-    m.remove();
-    if(typeof window.render==='function')window.render();
-    alert(String(id)+' added to '+day+'.');
-  });
- }
- window.MealPilotV15={addToPlan:openPicker};
 
- // Intercept the recipe detail Add to Plan button from v1.4.
- document.addEventListener('click',function(e){
-   const b=e.target.closest('#mp14-add');
-   if(!b)return;
-   e.preventDefault();e.stopImmediatePropagation();
-   const ov=document.getElementById('mp14-overlay');if(!ov)return;
-   const title=ov.querySelector('.mp14-title');
-   const name=title?title.textContent:'';
-   const r=recipes().find(x=>(x.name||x.title||'')===name);
-   if(r)openPicker(r.id||r.name);
- },true);
+    function findRecipeByTitle(title){
+      var a=allRecipes();
+      for(var i=0;i<a.length;i++){
+        var n=a[i] && (a[i].name||a[i].title);
+        if(n===title) return a[i];
+      }
+      return null;
+    }
 
- // Add a polished visual shell around the Discover area.
- function polish(){
-   const d=document.getElementById('mp13-discover');if(!d||d.dataset.v15)return;
-   d.dataset.v15='1';
-   const hero=d.querySelector('.mp13-hero');
-   if(hero)hero.classList.add('mp15-hero');
-   const search=d.querySelector('.mp13-search');
-   if(search)search.classList.add('mp15-glow');
- }
- setTimeout(polish,700);
+    function detectPlan(){
+      var keys=["mealpilot_plan","plan","weeklyPlan"];
+      for(var i=0;i<keys.length;i++){
+        try{
+          var raw=localStorage.getItem(keys[i]);
+          if(!raw) continue;
+          var value=JSON.parse(raw);
+          if(value && (Array.isArray(value)||typeof value==="object"))
+            return {key:keys[i],value:value};
+        }catch(e){}
+      }
+      return null;
+    }
+
+    function addToDay(recipeId,dayIndex){
+      var found=detectPlan(), day=DAYS[dayIndex];
+      if(found){
+        if(Array.isArray(found.value)) found.value[dayIndex]=recipeId;
+        else found.value[day]=recipeId;
+        try{localStorage.setItem(found.key,JSON.stringify(found.value));}catch(e){}
+      }
+      try{
+        localStorage.setItem("mealpilot_selected_day_v151",day);
+        localStorage.setItem("mealpilot_selected_recipe_v151",String(recipeId));
+      }catch(e){}
+      try{ if(typeof window.render==="function") window.render(); }catch(e){}
+    }
+
+    function picker(recipe){
+      if(!recipe) return;
+      var id=recipe.id||recipe.name||recipe.title;
+      var modal=document.createElement("div");
+      modal.className="mp15-modal";
+      var buttons="";
+      for(var i=0;i<DAYS.length;i++){
+        buttons+='<button class="mp15-day" data-day="'+i+'"><b>'+DAYS[i]+'</b><span>Add meal here</span></button>';
+      }
+      modal.innerHTML='<div class="mp15-picker"><h2>Add to your week</h2><p>Choose a day for '+String(recipe.name||recipe.title||"this recipe")+'.</p><div class="mp15-days">'+buttons+'</div><button class="mp15-cancel">Cancel</button></div>';
+      document.body.appendChild(modal);
+      modal.querySelector(".mp15-cancel").onclick=function(){modal.remove();};
+      var dayButtons=modal.querySelectorAll(".mp15-day");
+      for(var j=0;j<dayButtons.length;j++){
+        dayButtons[j].onclick=function(){
+          addToDay(id,Number(this.getAttribute("data-day")));
+          modal.remove();
+        };
+      }
+    }
+
+    document.addEventListener("click",function(e){
+      try{
+        var btn=e.target && e.target.closest ? e.target.closest("#mp14-add") : null;
+        if(!btn) return;
+        var overlay=document.getElementById("mp14-overlay");
+        var title=overlay && overlay.querySelector(".mp14-title");
+        var recipe=findRecipeByTitle(title ? title.textContent : "");
+        if(!recipe) return; // Let the original handler run if we cannot safely identify it.
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        picker(recipe);
+      }catch(err){}
+    },true);
+
+    setTimeout(function(){
+      try{
+        var d=document.getElementById("mp13-discover");
+        if(d){
+          var hero=d.querySelector(".mp13-hero");
+          if(hero) hero.classList.add("mp15-hero");
+        }
+      }catch(e){}
+    },600);
+  } catch(e) {
+    // Never allow enhancement code to break the base MealPilot app.
+  }
 })();
 </script>
+
 </body></html>
