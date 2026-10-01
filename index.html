@@ -183,6 +183,44 @@ body{background:var(--mp13-bg)!important;color:var(--mp13-text)!important;font-f
 .mp14-servings strong{min-width:25px;text-align:center}
 @media(min-width:700px){.mp14-sheet{max-width:680px;border-radius:26px;margin-bottom:20px}.mp14-overlay{align-items:center}}
 </style>
+
+<style id="mealpilot-v15">
+:root{
+ --mp-green:#18a66b;--mp-green2:#0f8756;--mp-mint:#e8f8f0;
+ --mp-ink:#18212b;--mp-muted:#71808d;--mp-bg:#f4f6f7;
+ --mp-card:#fff;--mp-line:#e1e7eb;--mp-shadow:0 10px 30px rgba(24,40,50,.07)
+}
+body{background:var(--mp-bg)!important;color:var(--mp-ink)!important}
+.mp15-glow{background:radial-gradient(circle at 15% 0,#e3f8ee 0,transparent 42%)}
+.mp15-modal{position:fixed;inset:0;background:rgba(14,24,31,.45);z-index:10001;display:flex;align-items:flex-end;justify-content:center}
+.mp15-picker{width:100%;background:#f6f8f8;border-radius:28px 28px 0 0;padding:20px;box-shadow:0 -15px 45px rgba(0,0,0,.2)}
+.mp15-picker h2{margin:0 0 5px;font-size:24px!important}.mp15-picker p{margin:0 0 16px;color:var(--mp-muted);font-size:14px}
+.mp15-days{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.mp15-day{background:#fff!important;border:1px solid var(--mp-line)!important;border-radius:17px!important;padding:14px!important;text-align:left;min-height:64px!important;box-shadow:0 4px 14px rgba(20,30,40,.04)}
+.mp15-day b{display:block}.mp15-day span{font-size:12px;color:var(--mp-muted)}
+.mp15-cancel{width:100%;margin-top:12px;background:#fff!important;border:1px solid var(--mp-line)!important}
+.mp15-hero{
+ background:linear-gradient(145deg,#0f8f5c 0%,#1db878 70%,#7bd9ad 150%);
+ border-radius:25px;padding:22px;color:#fff;position:relative;overflow:hidden;
+ box-shadow:0 13px 32px rgba(15,143,92,.2)
+}
+.mp15-hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-55px;top:-65px;background:rgba(255,255,255,.13)}
+.mp15-hero h2{color:#fff!important;font-size:27px!important;margin:5px 0!important;position:relative;z-index:1}
+.mp15-hero p{position:relative;z-index:1;margin:0;opacity:.9}
+.mp15-kicker{font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.mp15-chip{display:inline-block;margin-top:14px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:700}
+.mp15-recipe{
+ border:1px solid var(--mp-line);background:#fff;border-radius:22px;overflow:hidden;
+ box-shadow:var(--mp-shadow);margin-bottom:14px
+}
+.mp15-food{height:155px;display:flex;align-items:center;justify-content:center;font-size:68px;background:linear-gradient(135deg,#edf9f3,#f9faf9)}
+.mp15-info{padding:15px}.mp15-name{font-size:19px;font-weight:800;letter-spacing:-.02em}.mp15-meta{font-size:12px;color:var(--mp-muted);margin-top:5px}
+.mp15-row{display:flex;gap:8px;margin-top:12px}.mp15-row button{flex:1;min-height:43px!important;font-weight:750}
+.mp15-primary{background:var(--mp-green)!important;color:#fff!important;border:0!important;box-shadow:0 5px 14px rgba(24,166,107,.2)}
+.mp15-secondary{background:#f7f9f9!important;border:1px solid var(--mp-line)!important}
+.mp15-section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px}
+.mp15-section-title h3{margin:0!important}.mp15-section-title span{font-size:12px;color:var(--mp-muted)}
+@media(min-width:700px){.mp15-picker{max-width:620px;border-radius:28px;margin-bottom:20px}.mp15-modal{align-items:center}.mp15-days{grid-template-columns:repeat(3,1fr)}}
 </head>
 <body>
 <header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
@@ -705,6 +743,67 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
      if(a[idx]){e.preventDefault();e.stopImmediatePropagation();open(String(a[idx].id||a[idx].name));}
    }
  },true);
+})();
+</script>
+
+<script>
+(function(){
+ const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+ function recipes(){return window.recipes||window.RECIPES||window.recipeData||[]}
+ function getPlan(){
+  const keys=['mealpilot_plan','plan','weeklyPlan'];
+  for(const k of keys){try{const v=JSON.parse(localStorage.getItem(k)||'null');if(v)return {k,v}}catch(e){}}
+  return null;
+ }
+ function savePlan(k,v){localStorage.setItem(k,JSON.stringify(v))}
+ function openPicker(id){
+  const m=document.createElement('div');m.className='mp15-modal';
+  m.innerHTML='<div class="mp15-picker"><h2>Add to your week</h2><p>Choose where you want this recipe.</p><div class="mp15-days">'+DAYS.map((d,i)=>'<button class="mp15-day" data-i="'+i+'"><b>'+d+'</b><span>Tap to add meal</span></button>').join('')+'</div><button class="mp15-cancel">Cancel</button></div>';
+  document.body.appendChild(m);
+  m.querySelector('.mp15-cancel').onclick=()=>m.remove();
+  m.querySelectorAll('.mp15-day').forEach(b=>b.onclick=()=>{
+    const day=DAYS[Number(b.dataset.i)];
+    const info=getPlan();
+    if(info && info.v){
+      let p=info.v;
+      if(Array.isArray(p)){
+        p[Number(b.dataset.i)]=id;
+      }else if(typeof p==='object'){
+        p[day]=id;
+      }
+      savePlan(info.k,p);
+    }
+    localStorage.setItem('mealpilot_selected_day_v15',day);
+    localStorage.setItem('mealpilot_selected_recipe_v15',String(id));
+    m.remove();
+    if(typeof window.render==='function')window.render();
+    alert(String(id)+' added to '+day+'.');
+  });
+ }
+ window.MealPilotV15={addToPlan:openPicker};
+
+ // Intercept the recipe detail Add to Plan button from v1.4.
+ document.addEventListener('click',function(e){
+   const b=e.target.closest('#mp14-add');
+   if(!b)return;
+   e.preventDefault();e.stopImmediatePropagation();
+   const ov=document.getElementById('mp14-overlay');if(!ov)return;
+   const title=ov.querySelector('.mp14-title');
+   const name=title?title.textContent:'';
+   const r=recipes().find(x=>(x.name||x.title||'')===name);
+   if(r)openPicker(r.id||r.name);
+ },true);
+
+ // Add a polished visual shell around the Discover area.
+ function polish(){
+   const d=document.getElementById('mp13-discover');if(!d||d.dataset.v15)return;
+   d.dataset.v15='1';
+   const hero=d.querySelector('.mp13-hero');
+   if(hero)hero.classList.add('mp15-hero');
+   const search=d.querySelector('.mp13-search');
+   if(search)search.classList.add('mp15-glow');
+ }
+ setTimeout(polish,700);
 })();
 </script>
 </body></html>
