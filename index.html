@@ -137,6 +137,27 @@ body{
   padding-bottom:max(76px, env(safe-area-inset-bottom))!important;
 }
 </style>
+
+<style id="mealpilot-v13-design">
+:root{--mp13-bg:#f5f6f8;--mp13-card:#fff;--mp13-text:#17202a;--mp13-muted:#697586;--mp13-line:#e2e6eb;--mp13-green:#16a36a;--mp13-soft:#e5f7ef}
+body{background:var(--mp13-bg)!important;color:var(--mp13-text)!important;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif!important}
+.mp13-wrap{margin:10px 0 18px}
+.mp13-hero{background:linear-gradient(135deg,#0f8f5c,#19ad73);color:#fff;border-radius:24px;padding:20px;box-shadow:0 12px 30px rgba(15,143,92,.22)}
+.mp13-eyebrow{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.82}
+.mp13-hero h2{margin:5px 0 6px;color:#fff!important;font-size:25px!important}
+.mp13-hero p{margin:0;opacity:.9;font-size:14px}
+.mp13-search{margin-top:14px}.mp13-search input{width:100%;box-sizing:border-box;background:#fff!important;border:0!important;min-height:48px!important}
+.mp13-filters{display:flex;gap:8px;overflow-x:auto;padding:12px 0 5px}
+.mp13-filter{white-space:nowrap;padding:9px 13px;border:1px solid #dfe5ea!important;background:#fff!important;border-radius:999px!important;font-weight:650;min-height:auto!important}
+.mp13-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.mp13-card{background:#fff;border:1px solid var(--mp13-line);border-radius:19px;overflow:hidden;box-shadow:0 7px 22px rgba(20,30,40,.06)}
+.mp13-photo{height:116px;background:linear-gradient(135deg,#e8f6ef,#f4f7f6);display:flex;align-items:center;justify-content:center;font-size:38px}
+.mp13-body{padding:12px}.mp13-title{font-weight:750;line-height:1.18;font-size:15px;min-height:36px}
+.mp13-meta{font-size:12px;color:var(--mp13-muted);margin-top:6px}
+.mp13-actions{display:flex;gap:6px;margin-top:10px}.mp13-actions button{flex:1;min-height:36px!important;padding:6px!important;font-size:12px}
+.mp13-star{max-width:42px}.mp13-empty{padding:25px 10px;text-align:center;color:var(--mp13-muted);grid-column:1/-1}
+@media(min-width:700px){.mp13-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 <header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
@@ -580,6 +601,34 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
       return r;
     };
   }
+})();
+</script>
+
+<script>
+(function(){
+ const F='mealpilot_favorites_v13';let q='';
+ function fav(){try{return JSON.parse(localStorage.getItem(F)||'[]')}catch(e){return[]}}
+ function save(a){localStorage.setItem(F,JSON.stringify(a))}
+ function rs(){return window.recipes||window.RECIPES||window.recipeData||[]}
+ function esc(s){return String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+ function icon(n){n=(n||'').toLowerCase();if(/fish|salmon|cod|shrimp/.test(n))return'🐟';if(/chicken|turkey/.test(n))return'🍗';if(/beef|steak/.test(n))return'🥩';if(/pasta|noodle/.test(n))return'🍝';if(/taco|burrito|fajita|enchilada/.test(n))return'🌮';if(/curry/.test(n))return'🍛';if(/egg|oat|toast|breakfast/.test(n))return'🍳';return'🥗'}
+ function render(){
+  const root=document.getElementById('mp13-discover');if(!root)return;
+  let a=rs();if(!Array.isArray(a)||!a.length)return;
+  const fs=fav(), term=q.toLowerCase();
+  a=a.filter(r=>(!term||(r.name||r.title||'').toLowerCase().includes(term)));
+  root.querySelector('.mp13-grid').innerHTML=a.map(r=>{
+   const id=String(r.id||r.name),on=fs.includes(id),name=r.name||r.title||'Recipe';
+   return '<article class="mp13-card"><div class="mp13-photo">'+icon(name)+'</div><div class="mp13-body"><div class="mp13-title">'+esc(name)+'</div><div class="mp13-meta">'+(r.time||r.totalTime||'')+(r.protein?' · '+r.protein+'g protein':'')+'</div><div class="mp13-actions"><button class="mp13-filter" onclick="MealPilotV13.open(\''+encodeURIComponent(id)+'\')">View</button><button class="mp13-filter mp13-star" onclick="MealPilotV13.fav(\''+encodeURIComponent(id)+'\')">'+(on?'★':'☆')+'</button></div></div></article>'
+  }).join('')||'<div class="mp13-empty">No recipes found.</div>';
+ }
+ window.MealPilotV13={
+  fav:function(x){const id=decodeURIComponent(x),a=fav(),i=a.indexOf(id);if(i>=0)a.splice(i,1);else a.push(id);save(a);render()},
+  open:function(x){const id=decodeURIComponent(x);localStorage.setItem('mealpilot_selected_recipe_v13',id);const r=rs().find(v=>String(v.id||v.name)===id);if(typeof openRecipe==='function')openRecipe(r||id);else if(typeof showRecipe==='function')showRecipe(r||id);else if(typeof selectRecipe==='function')selectRecipe(id);},
+  search:function(x){q=x;render()}
+ };
+ function mount(){if(document.getElementById('mp13-discover'))return;const main=document.querySelector('main')||document.body,box=document.createElement('section');box.id='mp13-discover';box.className='mp13-wrap';box.innerHTML='<div class="mp13-hero"><div class="mp13-eyebrow">Discover</div><h2>Find your next meal</h2><p>Browse, search and save recipes you want to make.</p><div class="mp13-search"><input id="mp13-search" placeholder="Search recipes…"></div></div><div class="mp13-filters"><button class="mp13-filter">All</button><button class="mp13-filter">★ Favorites</button><button class="mp13-filter">Quick</button><button class="mp13-filter">High Protein</button></div><div class="mp13-grid"></div>';main.prepend(box);box.querySelector('#mp13-search').oninput=e=>MealPilotV13.search(e.target.value);render()}
+ setTimeout(mount,500);setTimeout(render,1200);
 })();
 </script>
 </body></html>
