@@ -632,7 +632,7 @@ function groceryData(){
  for(const r of state.plan){for(const [rawK,v] of Object.entries(r.ingredients)){
   let k=canonicalKey(rawK);let dept=groceryMeta[k]?.dept||deptMap[k]||"Other";groups[dept]??={};groups[dept][k]??={values:[],recipes:[]};groups[dept][k].values.push(qtyScale(v,state.settings.servings));groups[dept][k].recipes.push(r.name);
  }}
- for(const dept of Object.keys(groups))for(const k of Object.keys(groups[dept])){let x=groups[dept][k];let d=pantryDeduct(k,x.values);x.amount=purchaseAmount(k,d.buyValues);x.amount.needed=d.values.length?purchaseAmount(k,d.values).needed:"0";x.amount.have=d.have;x.amount.buy=d.buyValues.length?purchaseAmount(k,d.buyValues).buy:"Nothing to buy";if(!d.buyValues.length)x.amount.cost=0,x.amount.packages=0;}
+ for(const dept of Object.keys(groups))for(const k of Object.keys(groups[dept])){let x=groups[dept][k];let d=pantryDeduct(k,x.values);x.amount=purchaseAmount(k,d.buyValues);x.amount.needed=x.values.length?purchaseAmount(k,x.values).needed:"0";x.amount.have=d.have;x.amount.buy=d.buyValues.length?purchaseAmount(k,d.buyValues).buy:"Nothing to buy";if(!d.buyValues.length)x.amount.cost=0,x.amount.packages=0;}
  for(const dept of Object.keys(groups)){for(const k of Object.keys(groups[dept])){if(!groups[dept][k].amount.buy && !groups[dept][k].amount.have) delete groups[dept][k];}}
  return groups;
 }
