@@ -340,11 +340,50 @@ function scorePlan(r,selected,pantry,recent){
         (recent.includes(r.id)?-6:0)+(r.p>=state.settings.minProtein?2:0)
 }
 function score(r,ing){return Object.keys(r.ingredients).filter(x=>ing.has(x)).length}
+function pantryKey(x){return String(x||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')}
+function pantryIngredientSet(){
+ let raw=state.pantry||[],set=new Set();
+ raw.forEach(x=>{let n=typeof x==='string'?x:x&&x.name;if(!n)return;let k=pantryKey(n);set.add(k);
+   const aliases={
+    chicken_breast:'chicken',chicken:'chicken',ground_turkey:'turkey',turkey:'turkey',ground_beef:'beef',beef:'beef',
+    white_rice:'rice',long_grain_white_rice:'rice',rice:'rice',black_beans:'black_beans',beans:'black_beans',
+    olive_oil:'olive_oil',oil:'olive_oil',greek_yogurt:'greek_yogurt',yogurt:'greek_yogurt',bell_peppers:'bell_pepper',
+    bell_pepper:'bell_pepper',green_peppers:'bell_pepper',tomatoes:'tomato',tomato:'tomato',onions:'onion',onion:'onion',
+    garlic:'garlic',broccoli:'broccoli',potatoes:'potatoes',potato:'potatoes',eggs:'eggs',egg:'eggs',
+    tortillas:'tortillas',tortilla:'tortillas',pasta:'pasta',salmon:'salmon',cod:'cod',shrimp:'shrimp',bread:'bread',
+    oats:'oats',peanut_butter:'peanut_butter',bananas:'bananas',banana:'banana',berries:'berries',lemon:'lemon',salsa:'salsa',
+    cheddar:'cheddar',mozzarella:'mozzarella',feta:'feta',milk:'milk',cucumber:'cucumber',avocado:'avocado'
+   }; if(aliases[k])set.add(aliases[k]);
+ }); return set;
+}
+function useWhatIHave(){
+ let pool=filtered();
+ if(pool.length<state.settings.meals){alert('Not enough recipes match your filters. Try relaxing one preference.');return}
+ let pantry=pantryIngredientSet();
+ if(!pantry.size){toast('Add some pantry items first');show('pantry');return}
+ let used=new Set(),out=[],recent=state.plan.map(x=>x.id);
+ for(let i=0;i<state.settings.meals;i++){
+   let selected=new Set(out.flatMap(r=>Object.keys(r.ingredients)));
+   let candidates=pool.filter(r=>!used.has(r.id));
+   candidates.sort((a,b)=>{
+     const pa=Object.keys(a.ingredients).filter(x=>pantry.has(x)).length;
+     const pb=Object.keys(b.ingredients).filter(x=>pantry.has(x)).length;
+     const oa=Object.keys(a.ingredients).filter(x=>selected.has(x)).length;
+     const ob=Object.keys(b.ingredients).filter(x=>selected.has(x)).length;
+     const ra=recent.includes(a.id)?-4:0, rb=recent.includes(b.id)?-4:0;
+     return (pb*10+ob*3+rb)-(pa*10+oa*3+ra);
+   });
+   let top=candidates.slice(0,Math.min(4,candidates.length));
+   let pick=top[Math.floor(Math.random()*top.length)];
+   used.add(pick.id);out.push(pick);
+ }
+ state.plan=out;state.cookedPlan={};save();show('plan');toast('Built a pantry-first week');
+}
 function planView(){
  let p=state.plan;state.cookedPlan??={};
  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
  return `<h2>This Week</h2>
- <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><div class="actions"><button onclick="generate()">Generate My Week</button>${p.length?`<button class="secondary" onclick="clearPlan()">Clear</button>`:""}</div></div>${p.length?`<div class="meta" style="margin-top:12px">Average: ${Math.round(p.reduce((a,r)=>a+r.cal,0)/p.length)} cal · ${Math.round(p.reduce((a,r)=>a+r.p,0)/p.length)}g protein</div>`:""}</div>
+ <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><div class="actions"><button onclick="generate()">Generate My Week</button><button class="secondary" onclick="useWhatIHave()">Use What I Have</button>${p.length?`<button class="secondary" onclick="clearPlan()">Clear</button>`:""}</div></div>${p.length?`<div class="meta" style="margin-top:12px">Average: ${Math.round(p.reduce((a,r)=>a+r.cal,0)/p.length)} cal · ${Math.round(p.reduce((a,r)=>a+r.p,0)/p.length)}g protein</div>`:""}</div>
  ${p.length?p.map((r,i)=>{let cooked=!!state.cookedPlan[i];return `<div class="card meal"><div style="flex:1"><small>${days[i]}</small><strong>${r.name}</strong><small>${r.time} min · ${r.cal} cal · ${r.p}g protein</small>${cooked?`<span class="tag" style="margin-top:6px;display:inline-block">✓ Cooked</span>`:""}</div><div class="actions"><button onclick="cook(${r.id},${i})">${cooked?'Cook Again':'Cook'}</button><button class="secondary" onclick="markPlanCooked(${i})">${cooked?'Unmark Cooked':'I Cooked This'}</button><button class="secondary" onclick="openSwap(${i})">Swap</button></div></div>`}).join(""):`<div class="card empty">No plan yet.<br>Tap <b>Generate My Week</b> to build one.</div>`}
  ${p.length?`<div class="card"><div class="actions"><button onclick="show('shop')">View Grocery List</button></div></div>`:""}`;
 }
