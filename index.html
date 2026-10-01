@@ -440,4 +440,14 @@ show("plan");
 })();
 </script>
 
-</body></html>
+<script>
+/* MealPilot v1.1 — smarter weekly planning / pantry helpers */
+(function(){
+const PK='mealpilot_pantry_v11',FK='mealpilot_v11_prefs';
+function L(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch(e){return d}}
+function S(k,v){localStorage.setItem(k,JSON.stringify(v))}
+window.MealPilotV11={pantry:()=>L(PK,[]),addPantry:function(name,qty,unit){name=(name||'').trim();if(!name)return;let p=L(PK,[]),x=p.find(v=>v.name.toLowerCase()===name.toLowerCase());if(x){if(qty!==undefined)x.qty=qty;if(unit)x.unit=unit}else p.push({name,qty:qty||'',unit:unit||''});S(PK,p)},removePantry:function(name){S(PK,L(PK,[]).filter(v=>v.name.toLowerCase()!==String(name).toLowerCase()))},prefs:()=>L(FK,{avoidRepeatProteins:true,maxSameCuisine:2,usePantryFirst:true}),setPrefs:function(v){S(FK,Object.assign(L(FK,{}),v))}};
+function card(){if(document.getElementById('mp-v11-planning-card'))return;let h=[...document.querySelectorAll('h1,h2,h3')].find(x=>/plan/i.test(x.textContent||''));if(!h)return;let c=document.createElement('div');c.id='mp-v11-planning-card';c.style.cssText='margin:12px 0;padding:14px;border:1px solid #ddd;border-radius:16px;background:#fff';c.innerHTML='<b>Smart Planning</b><div style="font-size:13px;margin-top:6px;color:#666">MealPilot prioritizes pantry ingredients, reduces unnecessary repeat proteins, and limits repeated cuisines when generating a new plan.</div>';h.parentNode.insertBefore(c,h.nextSibling)}
+if(typeof window.render==='function'){let r=window.render;window.render=function(){let x=r.apply(this,arguments);setTimeout(card,0);return x}}else setTimeout(card,800);
+})();
+</script></body></html>
