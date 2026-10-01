@@ -81,8 +81,8 @@ const recipes=[
 {id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],ingredients:{greek_yogurt:"3 cups",berries:"1 pint",granola:"1 bag",honey:"2 tbsp",banana:"2"}},
 {id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],ingredients:{eggs:"8",black_beans:"1 can",tortillas:"8",cheddar:"1/2 lb",potatoes:"1.5 lb",salsa:"1 jar"}}
 ];
-let state=JSON.parse(localStorage.getItem("mealpilot3")||"null")||{plan:[],pantry:[],favorites:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
-function save(){localStorage.setItem("mealpilot3",JSON.stringify(state))}
+let state=JSON.parse(localStorage.getItem("mealpilot3")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
+function save(){state.customGroceries??=[];localStorage.setItem("mealpilot3",JSON.stringify(state))}
 function filtered(){
  let s=state.settings, dislikes=(s.dislikes||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), allergies=(s.allergies||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), cuisines=(s.cuisines||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
  return recipes.filter(r=>{
@@ -106,7 +106,7 @@ function generate(){
   let top=candidates.slice(0,Math.min(5,candidates.length));
   let pick=top[Math.floor(Math.random()*top.length)];used.add(pick.id);out.push(pick);
  }
- state.plan=out;save();show("plan")
+ state.plan=out;state.customGroceries??=[];save();show("plan")
 }
 function scorePlan(r,selected,pantry,recent){
  return Object.keys(r.ingredients).filter(x=>selected.has(x)).length*5+
@@ -131,16 +131,52 @@ function renderRecipes(){
  let list=recipes.filter(r=>r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q));
  document.getElementById("recipeList").innerHTML=list.map(r=>`<div class="card recipe"><div class="row"><div><h3>${r.name}</h3><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div></div><button onclick="cook(${r.id})">Cook</button></div><div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><div class="meta" style="margin-top:9px">${Object.entries(r.ingredients).map(([k,v])=>`${k.replaceAll("_"," ")}: ${v}`).join(" · ")}</div></div>`).join("");
 }
-function shopView(){
- let counts={}, pantry=state.pantry.map(x=>x.toLowerCase().replaceAll(" ","_"));
- for(const r of state.plan)for(const [k,v] of Object.entries(r.ingredients)){
-  if(pantry.some(p=>k.includes(p)||p.includes(k)))continue;
-  counts[k]=(counts[k]||[]).concat([v]);
+
+const deptMap={
+ chicken:"Meat & Seafood",ground_turkey:"Meat & Seafood",ground_beef:"Meat & Seafood",steak:"Meat & Seafood",salmon:"Meat & Seafood",shrimp:"Meat & Seafood",cod:"Meat & Seafood",eggs:"Dairy & Eggs",
+ greek_yogurt:"Dairy & Eggs",yogurt:"Dairy & Eggs",cream:"Dairy & Eggs",parmesan:"Dairy & Eggs",mozzarella:"Dairy & Eggs",cheddar:"Dairy & Eggs",feta:"Dairy & Eggs",ricotta:"Dairy & Eggs",milk:"Dairy & Eggs",
+ broccoli:"Produce",bell_pepper:"Produce",onion:"Produce",lime:"Produce",lemon:"Produce",spinach:"Produce",cucumber:"Produce",tomato:"Produce",carrots:"Produce",green_beans:"Produce",sweet_potatoes:"Produce",avocado:"Produce",lettuce:"Produce",romaine:"Produce",cabbage:"Produce",basil:"Produce",celery:"Produce",ginger:"Produce",green_onion:"Produce",bananas:"Produce",berries:"Produce",peas:"Frozen",corn:"Canned & Dry Goods",
+ black_beans:"Canned & Dry Goods",kidney_beans:"Canned & Dry Goods",chickpeas:"Canned & Dry Goods",lentils:"Canned & Dry Goods",tomatoes:"Canned & Dry Goods",marinara:"Canned & Dry Goods",salsa:"Canned & Dry Goods",salsa_verde:"Canned & Dry Goods",enchilada_sauce:"Canned & Dry Goods",coconut_milk:"Canned & Dry Goods",
+ rice:"Pantry",pasta:"Pantry",noodles:"Pantry",oats:"Pantry",bread:"Bakery",tortillas:"Bakery",pitas:"Bakery",pita:"Bakery",hummus:"Deli",granola:"Pantry",chia_seeds:"Pantry",peanut_butter:"Pantry",cinnamon:"Pantry",cumin:"Pantry",curry_powder:"Pantry",chili_powder:"Pantry",fajita_seasoning:"Pantry",everything_bagel_seasoning:"Pantry",
+ soy_sauce:"Condiments",honey:"Condiments",olive_oil:"Condiments",balsamic:"Condiments",caesar_dressing:"Condiments",chicken_broth:"Canned & Dry Goods",sun_dried_tomatoes:"Canned & Dry Goods"
+};
+function qtyScale(v,servings){
+ let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);if(!m)return v;
+ let n=parseFloat(m[1])*(servings/2),unit=m[2];
+ let rounded=Math.round(n*4)/4;
+ let shown=Number.isInteger(rounded)?String(rounded):String(rounded);
+ return shown+" "+unit;
+}
+function groceryData(){
+ let groups={};
+ for(const r of state.plan){
+  for(const [k,v] of Object.entries(r.ingredients)){
+   let pantry=state.pantry.map(x=>x.toLowerCase().replaceAll(" ","_"));
+   if(pantry.some(p=>k===p||k.includes(p)||p.includes(k)))continue;
+   let dept=deptMap[k]||"Other";
+   groups[dept]??={};
+   groups[dept][k]??={qty:[],recipes:[]};
+   groups[dept][k].qty.push(qtyScale(v,state.settings.servings));
+   groups[dept][k].recipes.push(r.name);
+  }
  }
- return `<h2>Grocery List</h2><div class="card notice">Built from your weekly plan. Pantry matches are excluded from the list.</div>
- <div class="card">${Object.keys(counts).length?Object.entries(counts).map(([k,vs])=>`<div class="listitem"><input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''"><span><b>${k.replaceAll("_"," ")}</b><br><small>${vs.join(" + ")} · ${state.settings.servings} servings</small></span></div>`).join(""):`<div class="empty">Generate a plan first.</div>`}</div>
+ return groups;
+}
+function shopView(){
+ let groups=groceryData(), custom=state.customGroceries||[];
+ let depts=Object.keys(groups);
+ let content=depts.map(dept=>`<div class="card"><h3 style="margin-top:0">${dept}</h3>${
+   Object.entries(groups[dept]).map(([k,x])=>`<div class="listitem">
+   <input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''">
+   <span style="flex:1"><b>${k.replaceAll("_"," ")}</b><br><small>${x.qty.join(" + ")}</small><br><small style="color:#9ca3af">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]}</small></span></div>`).join("")
+ }</div>`).join("");
+ let customHtml=custom.length?`<div class="card"><h3 style="margin-top:0">Custom Items</h3>${custom.map((x,i)=>`<div class="listitem"><input type="checkbox"><span style="flex:1">${x}</span><button class="secondary" onclick="state.customGroceries.splice(${i},1);save();show('shop')">Remove</button></div>`).join("")}</div>`:"";
+ return `<h2>Grocery List</h2>
+ <div class="card"><div class="row"><div><b>${Object.values(groups).reduce((n,g)=>n+Object.keys(g).length,0)} ingredients</b><div class="meta">${state.settings.servings} servings · pantry-aware</div></div><button onclick="addCustomGrocery()">+ Add Item</button></div></div>
+ ${content||`<div class="card empty">Generate a weekly plan first.</div>`}${customHtml}
  <div class="card"><div class="actions"><button onclick="alert('Target handoff is the next integration milestone. Your Target password will never be stored in MealPilot.')">Send to Target</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div></div>`;
 }
+function addCustomGrocery(){let x=prompt("What do you need?");if(x&&x.trim()){state.customGroceries??=[];state.customGroceries.push(x.trim());save();show("shop")}}
 function pantryView(){return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div></div><div class="card">${state.pantry.length?state.pantry.map((x,i)=>`<div class="listitem"><span>${x}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
 function addPantry(){let x=document.getElementById("pantryInput").value.trim();if(x){state.pantry.push(x);save();show("pantry")}}
 function profileView(){let s=state.settings;return `<h2>Preferences</h2><div class="card">
