@@ -30,6 +30,113 @@ label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 <style>
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;z-index:30;box-shadow:0 8px 30px #0003;font-size:13px;max-width:90%;text-align:center}.fav{font-size:20px;background:transparent!important;color:#6b7280!important;padding:5px}.fav.on{color:#b45309!important}.recipeTap{cursor:pointer}.historyItem{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;background:#f0f1f3;font-size:12px}.sectionTitle{margin:18px 2px 8px}.mutedbox{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;color:var(--muted)}button:disabled{opacity:.45}.recipeDetail h2{margin-top:0}.recipeDetail .ingredientRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
 </style>
+
+<style id="mealpilot-v12-design">
+:root{
+  --mp-bg:#f5f6f8;
+  --mp-card:#ffffff;
+  --mp-text:#17202a;
+  --mp-muted:#697586;
+  --mp-line:#e4e7ec;
+  --mp-accent:#16a36a;
+  --mp-accent-dark:#0d7f51;
+  --mp-accent-soft:#e5f7ef;
+  --mp-shadow:0 8px 28px rgba(20,30,40,.07);
+  --mp-radius:20px;
+}
+html{background:var(--mp-bg)}
+body{
+  background:var(--mp-bg)!important;
+  color:var(--mp-text)!important;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit}
+button{
+  border-radius:14px!important;
+  transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease;
+}
+button:active{transform:scale(.97)}
+h1,h2,h3{letter-spacing:-.025em}
+h1{font-size:30px!important;font-weight:800!important}
+h2{font-size:22px!important;font-weight:750!important}
+h3{font-size:18px!important;font-weight:700!important}
+
+.card,.recipe-card,.meal-card,.grocery-card,.panel,.section,.item-card{
+  background:var(--mp-card)!important;
+  border:1px solid var(--mp-line)!important;
+  border-radius:var(--mp-radius)!important;
+  box-shadow:var(--mp-shadow)!important;
+}
+.recipe-card,.meal-card{overflow:hidden}
+.recipe-card img,.meal-card img{border-radius:16px!important}
+input,select,textarea{
+  background:#fff!important;
+  border:1px solid #d9dee7!important;
+  border-radius:13px!important;
+  min-height:44px;
+  padding:10px 12px!important;
+}
+button.primary,.primary,.btn-primary{
+  background:var(--mp-accent)!important;
+  color:#fff!important;
+  border:none!important;
+  box-shadow:0 5px 14px rgba(22,163,106,.22)!important;
+}
+button.secondary,.secondary{
+  background:#fff!important;
+  color:var(--mp-text)!important;
+  border:1px solid var(--mp-line)!important;
+}
+.badge,.pill,.tag{
+  border-radius:999px!important;
+  background:var(--mp-accent-soft)!important;
+  color:var(--mp-accent-dark)!important;
+  padding:5px 9px!important;
+  font-weight:650;
+}
+nav, .nav, .bottom-nav, .tabs{
+  background:rgba(255,255,255,.94)!important;
+  border-top:1px solid var(--mp-line)!important;
+  box-shadow:0 -8px 24px rgba(20,30,40,.05)!important;
+  backdrop-filter:blur(18px);
+}
+nav button,.nav button,.bottom-nav button,.tabs button{
+  min-height:54px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+nav button.active,.nav button.active,.bottom-nav button.active,.tabs button.active{
+  color:var(--mp-accent)!important;
+  font-weight:750!important;
+}
+hr{border-color:var(--mp-line)!important}
+small,.muted,.secondary-text{color:var(--mp-muted)!important}
+
+/* Make the weekly plan feel like a dashboard */
+[data-day],.day-card{
+  background:#fff!important;
+  border:1px solid var(--mp-line)!important;
+  border-radius:18px!important;
+  box-shadow:0 5px 18px rgba(20,30,40,.05)!important;
+  padding:14px!important;
+  margin-bottom:12px!important;
+}
+.cooked,.is-cooked{
+  background:var(--mp-accent-soft)!important;
+  border-color:#bfe8d3!important;
+}
+
+/* Touch targets */
+button{min-height:42px}
+a{color:var(--mp-accent-dark)}
+
+/* Safe-area friendly mobile layout */
+body{
+  padding-bottom:max(76px, env(safe-area-inset-bottom))!important;
+}
+</style>
 </head>
 <body>
 <header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
@@ -450,4 +557,29 @@ window.MealPilotV11={pantry:()=>L(PK,[]),addPantry:function(name,qty,unit){name=
 function card(){if(document.getElementById('mp-v11-planning-card'))return;let h=[...document.querySelectorAll('h1,h2,h3')].find(x=>/plan/i.test(x.textContent||''));if(!h)return;let c=document.createElement('div');c.id='mp-v11-planning-card';c.style.cssText='margin:12px 0;padding:14px;border:1px solid #ddd;border-radius:16px;background:#fff';c.innerHTML='<b>Smart Planning</b><div style="font-size:13px;margin-top:6px;color:#666">MealPilot prioritizes pantry ingredients, reduces unnecessary repeat proteins, and limits repeated cuisines when generating a new plan.</div>';h.parentNode.insertBefore(c,h.nextSibling)}
 if(typeof window.render==='function'){let r=window.render;window.render=function(){let x=r.apply(this,arguments);setTimeout(card,0);return x}}else setTimeout(card,800);
 })();
-</script></body></html>
+</script>
+<script>
+(function(){
+  function polish(){
+    if(document.getElementById('mp-v12-welcome')) return;
+    const main=document.querySelector('main')||document.body;
+    const h=main.querySelector('h1');
+    if(!h) return;
+    const box=document.createElement('div');
+    box.id='mp-v12-welcome';
+    box.style.cssText='margin:0 0 16px;padding:18px 18px 16px;border-radius:22px;background:linear-gradient(135deg,#e8f8f0,#f7fbf9);border:1px solid #ccebdd;';
+    box.innerHTML='<div style="font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:#0d7f51">MealPilot</div><div style="font-size:15px;margin-top:5px;color:#51606f">Plan it. Shop it. Cook it.</div>';
+    h.parentNode.insertBefore(box,h);
+  }
+  setTimeout(polish,300);
+  const old=window.render;
+  if(typeof old==='function'){
+    window.render=function(){
+      const r=old.apply(this,arguments);
+      setTimeout(polish,0);
+      return r;
+    };
+  }
+})();
+</script>
+</body></html>
