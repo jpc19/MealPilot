@@ -26,6 +26,9 @@ label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 .notice{background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:12px;color:#166534;font-size:13px}
 .empty{color:var(--muted);text-align:center;padding:30px 10px}.done{opacity:.55}
 .cookModal{max-width:640px;width:min(96%,640px);max-height:92vh}.cookTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.cookStep{font-size:25px;line-height:1.42;min-height:150px;display:flex;align-items:center}.cookControls{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px}.cookControls button{min-height:54px}.cookIngredient{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.cookIngredient input{width:22px;height:22px}.timerBox{background:#f5f5f7;border-radius:14px;padding:12px;margin:12px 0}.timerTime{font-size:32px;font-weight:750;text-align:center;margin:4px 0 10px}.tiny{font-size:12px;color:var(--muted)}.done b,.done strong{text-decoration:line-through}
+
+.swapOption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.swapOption:last-child{border-bottom:0}.swapInfo{min-width:0}.swapName{font-weight:750;font-size:15px}.swapReason{font-size:12px;color:#15803d;margin-top:5px}.swapCurrent{background:#f0f1f3;border-radius:14px;padding:12px;margin:10px 0 12px}.swapSearch{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:none;margin-bottom:8px}
 </style>
 <style>
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;z-index:30;box-shadow:0 8px 30px #0003;font-size:13px;max-width:90%;text-align:center}.fav{font-size:20px;background:transparent!important;color:#6b7280!important;padding:5px}.fav.on{color:#b45309!important}.recipeTap{cursor:pointer}.historyItem{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;background:#f0f1f3;font-size:12px}.sectionTitle{margin:18px 2px 8px}.mutedbox{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;color:var(--muted)}button:disabled{opacity:.45}.recipeDetail h2{margin-top:0}.recipeDetail .ingredientRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
@@ -345,8 +348,33 @@ function planView(){
  ${p.length?`<div class="card"><div class="actions"><button onclick="show('shop')">View Grocery List</button></div></div>`:""}`;
 }
 function markPlanCooked(i){state.cookedPlan??={};if(state.cookedPlan[i])delete state.cookedPlan[i];else state.cookedPlan[i]={id:state.plan[i].id,name:state.plan[i].name,date:new Date().toISOString()};save();show('plan');toast(state.cookedPlan[i]?'Marked cooked':'Marked not cooked')}
-function openSwap(i){let list=filtered().map(r=>`<div class="card"><div class="row"><div><b>${r.name}</b><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div></div><button onclick="doSwap(${i},${r.id})">Choose</button></div></div>`).join("");swapList.innerHTML=list;swapDlg.showModal()}
-function doSwap(i,id){state.plan[i]=recipes.find(r=>r.id===id);save();swapDlg.close();show("plan")}
+function openSwap(i){
+ let current=state.plan[i];
+ let pool=filtered().filter(r=>!current||r.id!==current.id);
+ let shared=key=>current&&Object.keys(current.ingredients||{}).includes(key);
+ pool.sort((a,b)=>{
+   const sa=Object.keys(a.ingredients||{}).filter(shared).length*5+(a.cuisine===current?.cuisine?2:0)+(a.time<=current?.time?1:0);
+   const sb=Object.keys(b.ingredients||{}).filter(shared).length*5+(b.cuisine===current?.cuisine?2:0)+(b.time<=current?.time?1:0);
+   return sb-sa;
+ });
+ const render=(arr)=>{
+   if(!arr.length)return '<div class="empty" style="padding:20px 4px">No compatible recipes match your current preferences.</div>';
+   return arr.map(r=>{
+     let overlap=Object.keys(r.ingredients||{}).filter(shared).length;
+     let reason=overlap?`Uses ${overlap} ingredient${overlap===1?'':'s'} already on your list`:(r.cuisine===current?.cuisine?'Same cuisine':'Fits your preferences');
+     return `<div class="swapOption"><div class="swapInfo"><div class="swapName">${r.name}</div><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div><div class="swapReason">${reason}</div></div><button onclick="doSwap(${i},${r.id})">Choose</button></div>`
+   }).join('');
+ };
+ swapList.innerHTML=`<div class="swapCurrent"><div class="tiny">REPLACING</div><b>${current?.name||'Meal'}</b><div class="meta">${current?.time||''} min · ${current?.cal||''} cal · ${current?.p||''}g protein</div></div><input id="swapSearch" class="swapSearch" placeholder="Search replacement meals…"><div id="swapResults">${render(pool)}</div>`;
+ const search=document.getElementById('swapSearch');
+ search.oninput=()=>{let q=search.value.toLowerCase().trim();let rendered=pool.filter(r=>r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q)));document.getElementById('swapResults').innerHTML=render(rendered)};
+ swapDlg.showModal();
+}
+function doSwap(i,id){
+ let replacement=recipes.find(r=>r.id===id);if(!replacement)return;
+ state.plan[i]=replacement;state.cookedPlan??={};delete state.cookedPlan[i];
+ save();swapDlg.close();show("plan");toast(`${replacement.name} added to ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][i]||'your plan'}`);
+}
 function recipesView(){
  return `<div class="row"><h2>Recipes</h2><button onclick="generate()">Build Week</button></div>
  <div class="card"><input id="search" type="text" placeholder="Search recipes..." oninput="renderRecipes()"><div class="actions" style="margin-top:10px"><button class="secondary" onclick="recipeFilter='all';renderRecipes()">All</button><button class="secondary" onclick="recipeFilter='favorites';renderRecipes()">Favorites</button><button class="secondary" onclick="recipeFilter='quick';renderRecipes()">Quick</button></div></div><div id="recipeList"></div>`;
