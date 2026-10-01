@@ -592,12 +592,42 @@ function pantryEntries(){
  return (state.pantry||[]).map(x=>typeof x==="string"?{name:x,qty:null}:x)
 }
 function pantryHas(k){let target=displayName(k).toLowerCase(),key=k.toLowerCase();return pantryEntries().some(x=>{let n=x.name.toLowerCase().replaceAll(" ","_");return n===key||n===target.replaceAll(" ","_")||key.includes(n)||n.includes(key)||target.includes(n.replaceAll("_"," "))})}
+function pantryMatches(k){
+ let target=displayName(k).toLowerCase(),key=k.toLowerCase();
+ return pantryEntries().filter(x=>{let n=String(x.name||'').toLowerCase().trim().replaceAll(" ","_");return n===key||n===target.replaceAll(" ","_")||key.includes(n)||n.includes(key)||target.includes(n.replaceAll("_"," "))});
+}
+function pantryDeduct(k,values){
+ let meta=groceryMeta[k], entries=pantryMatches(k), parsed=values.map(parseAmount);
+ if(!entries.length || !meta || !parsed.every(x=>x.n!==null)) return {values,have:null,buyValues:values};
+ let requiredUnit=parsed[0].unit.toLowerCase();
+ if(parsed.some(x=>x.unit.toLowerCase()!==requiredUnit)) return {values,have:null,buyValues:values};
+ let required=parsed.reduce((a,x)=>a+x.n,0);
+ let available=0, compatible=false;
+ for(const p of entries){
+   if(p.qty===null||p.qty===undefined||p.qty==='') continue;
+   let pn=parseFloat(p.qty); if(!Number.isFinite(pn)) continue;
+   let pu=String(p.unit||'').toLowerCase();
+   if(pu===requiredUnit){available+=pn;compatible=true;continue}
+   let converted=null;
+   if((requiredUnit==='oz'||requiredUnit==='lb') && (pu==='oz'||pu==='lb')) converted=toOz(pn,pu);
+   if((requiredUnit==='tbsp'||requiredUnit==='tsp'||requiredUnit==='cup') && pu===requiredUnit) converted=pn;
+   if(converted!==null){
+     if(requiredUnit==='lb') available+=converted/16; else if(requiredUnit==='oz') available+=converted; else available+=converted;
+     compatible=true;
+   }
+ }
+ if(!compatible) return {values,have:null,buyValues:values};
+ let remaining=Math.max(0,required-available);
+ let buyValues=remaining===0?[]:[`${Math.round(remaining*100)/100} ${parsed[0].unit}`];
+ return {values,have:`${Math.round(Math.min(available,required)*100)/100} ${parsed[0].unit}`,buyValues};
+}
 function groceryData(){
  let groups={};
  for(const r of state.plan){for(const [rawK,v] of Object.entries(r.ingredients)){
-  let k=canonicalKey(rawK);if(pantryHas(k))continue;let dept=groceryMeta[k]?.dept||deptMap[k]||"Other";groups[dept]??={};groups[dept][k]??={values:[],recipes:[]};groups[dept][k].values.push(qtyScale(v,state.settings.servings));groups[dept][k].recipes.push(r.name);
+  let k=canonicalKey(rawK);let dept=groceryMeta[k]?.dept||deptMap[k]||"Other";groups[dept]??={};groups[dept][k]??={values:[],recipes:[]};groups[dept][k].values.push(qtyScale(v,state.settings.servings));groups[dept][k].recipes.push(r.name);
  }}
- for(const dept of Object.keys(groups))for(const k of Object.keys(groups[dept])){let x=groups[dept][k];x.amount=purchaseAmount(k,x.values)}
+ for(const dept of Object.keys(groups))for(const k of Object.keys(groups[dept])){let x=groups[dept][k];let d=pantryDeduct(k,x.values);x.amount=purchaseAmount(k,d.buyValues);x.amount.needed=d.values.length?purchaseAmount(k,d.values).needed:"0";x.amount.have=d.have;x.amount.buy=d.buyValues.length?purchaseAmount(k,d.buyValues).buy:"Nothing to buy";if(!d.buyValues.length)x.amount.cost=0,x.amount.packages=0;}
+ for(const dept of Object.keys(groups)){for(const k of Object.keys(groups[dept])){if(!groups[dept][k].amount.buy && !groups[dept][k].amount.have) delete groups[dept][k];}}
  return groups;
 }
 function groceryTotals(groups){let total=0,count=0;for(const g of Object.values(groups))for(const x of Object.values(g)){total+=x.amount.cost||0;count+=x.amount.packages||0}return {total,count}}
