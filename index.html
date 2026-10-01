@@ -100,11 +100,13 @@ function profileView(){let s=state.settings;return `<h2>Preferences</h2><div cla
 <label>Meals per week</label><select id="meals"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
 <label>Minimum protein per meal (g)</label><input id="minProtein" type="number" min="0" step="5" value="${s.minProtein}">
 <label>Servings</label><select id="servings"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
-<br><br><button onclick="savePrefs()">Save Preferences & Generate</button></div>
-<script>document.getElementById("diet").value="${s.diet}";document.getElementById("maxTime").value="${s.maxTime}";document.getElementById("meals").value="${s.meals}";document.getElementById("servings").value="${s.servings}";</script>`}
+<br><br><button onclick="savePrefs()">Save Preferences & Generate</button></div>`}
 function savePrefs(){state.settings={diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value};save();generate()}
 function cook(id){let r=recipes.find(x=>x.id===id),steps=["Gather and prep all ingredients.","Season the main protein and prepare the vegetables.","Cook the protein until done.","Cook or roast the vegetables and starch.","Combine and finish with the sauce or seasoning.","Plate and serve."];let i=0;let d=document.createElement("dialog");d.innerHTML=`<div class="modal"><h2>${r.name}</h2><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div><br><div class="progress"><div id="bar" style="width:17%"></div></div><p id="step" style="font-size:22px;line-height:1.4;margin:30px 0">${steps[0]}</p><div class="row"><button class="secondary" id="back">Back</button><button id="next">Next</button></div></div>`;document.body.appendChild(d);d.showModal();function upd(){step.textContent=steps[i];bar.style.width=((i+1)/steps.length*100)+"%";back.disabled=i===0;next.textContent=i===steps.length-1?"Done":"Next"}back.onclick=()=>{if(i>0){i--;upd()}};next.onclick=()=>{if(i<steps.length-1){i++;upd()}else d.close()};d.addEventListener("close",()=>d.remove());}
-function show(page){document.querySelectorAll("nav button").forEach(b=>b.classList.remove("navactive"));document.getElementById("n"+page).classList.add("navactive");let el=document.getElementById("app");el.innerHTML=page==="plan"?planView():page==="recipes"?recipesView():page==="shop"?shopView():page==="pantry"?pantryView():profileView();if(page==="recipes")renderRecipes()}
+function show(page){document.querySelectorAll("nav button").forEach(b=>b.classList.remove("navactive"));document.getElementById("n"+page).classList.add("navactive");let el=document.getElementById("app");el.innerHTML=page==="plan"?planView():page==="recipes"?recipesView():page==="shop"?shopView():page==="pantry"?pantryView():profileView();
+if(page==="recipes")renderRecipes();
+if(page==="profile"){diet.value=state.settings.diet;maxTime.value=state.settings.maxTime;meals.value=state.settings.meals;servings.value=state.settings.servings}
+}
 show("plan");
 </script>
 </body></html>
