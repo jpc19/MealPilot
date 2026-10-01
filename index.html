@@ -3,123 +3,108 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#0b0d10">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
 <title>MealPilot</title>
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--text:#171717;--muted:#707070;--line:#e7e7e4;--accent:#171717;--good:#2f7d4a}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
-button,input,select{font:inherit} button{border:0;cursor:pointer}
-.app{max-width:720px;margin:auto;min-height:100vh;padding-bottom:88px}
-header{position:sticky;top:0;z-index:5;background:rgba(247,247,245,.92);backdrop-filter:blur(16px);padding:18px 18px 12px;border-bottom:1px solid var(--line)}
-.brand{font-size:24px;font-weight:800}.sub{color:var(--muted);font-size:13px;margin-top:3px}
-main{padding:16px}.view{display:none}.view.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.title{font-size:19px;font-weight:750}.muted{color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.meal{padding:13px;border:1px solid var(--line);border-radius:15px;background:#fff}.meal h3{margin:0 0 6px;font-size:16px}.meal p{margin:3px 0;color:var(--muted);font-size:13px}
-.primary{background:#111;color:#fff;padding:12px 15px;border-radius:12px;font-weight:700}.secondary{background:#eee;padding:10px 13px;border-radius:11px}.danger{color:#b33;background:#fff0f0}
-.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:7px 10px;margin:3px;font-size:13px}
-input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-label{display:block;font-weight:650;margin:13px 0 6px}
-.check{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.check input{width:auto}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:10}.nav{width:min(720px,100%);display:grid;grid-template-columns:repeat(5,1fr)}
-.nav button{background:none;padding:11px 4px;color:#777;font-size:11px}.nav button.active{color:#111;font-weight:800}.ico{display:block;font-size:20px;margin-bottom:2px}
-.hero{background:#111;color:#fff;border-radius:22px;padding:20px;margin-bottom:14px}.hero .muted{color:#c9c9c9}
-.stat{font-size:28px;font-weight:800}.recipe-img{height:130px;border-radius:14px;background:linear-gradient(135deg,#e9e5dc,#cfc8bb);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:12px}
-.big{font-size:25px;font-weight:800}.step{font-size:20px;line-height:1.45;padding:20px 4px}.progress{height:6px;background:#e5e5e5;border-radius:9px;overflow:hidden}.progress>div{height:100%;background:#111}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:flex-end;z-index:20}.sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px;max-height:88vh;overflow:auto;width:min(720px,100%);margin:auto}
-@media(min-width:600px){.app{padding-left:8px;padding-right:8px}.grid{grid-template-columns:repeat(3,1fr)}}
+:root{--bg:#f5f5f7;--card:#fff;--text:#171717;--muted:#6b7280;--line:#e5e7eb;--accent:#111827;--green:#15803d}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);padding-bottom:82px}
+header{padding:18px 18px 8px;position:sticky;top:0;background:rgba(245,245,247,.94);backdrop-filter:blur(12px);z-index:5}
+h1{font-size:28px;margin:0 0 4px}.sub{color:var(--muted);font-size:14px}
+main{padding:10px 16px;max-width:760px;margin:auto}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 2px 8px #00000008}
+button,select,input{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;font-weight:650;background:#111827;color:white}
+button.secondary{background:#eef0f3;color:#111827}.row{display:flex;gap:8px;align-items:center;justify-content:space-between}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.recipe h3{margin:0 0 4px}.meta{color:var(--muted);font-size:13px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.tag{font-size:11px;padding:5px 8px;background:#f0f1f3;border-radius:99px}
+.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden}.progress>div{height:100%;background:#111827}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(15px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:10}
+nav button{background:transparent;color:#6b7280;padding:7px 8px;font-size:11px}.navactive{color:#111827!important}
+.meal{display:flex;justify-content:space-between;gap:10px;align-items:center}.meal strong{display:block}.meal small{color:var(--muted)}
+input[type=checkbox]{width:20px;height:20px}.listitem{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+dialog{border:0;border-radius:20px;width:min(92%,560px);padding:0;box-shadow:0 20px 70px #0005}dialog::backdrop{background:#0008}.modal{padding:20px}
+select,input[type=number],input[type=text]{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:white}
+label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
+.notice{background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:12px;color:#166534;font-size:13px}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
 </style>
 </head>
 <body>
-<div class="app">
-<header><div class="brand">MealPilot</div><div class="sub">Plan • Shop • Cook</div></header>
-<main>
-<section id="plan" class="view active"></section>
-<section id="recipes" class="view"></section>
-<section id="shop" class="view"></section>
-<section id="pantry" class="view"></section>
-<section id="profile" class="view"></section>
-</main>
-<div class="bottom"><nav class="nav">
-<button data-v="plan" class="active"><span class="ico">📅</span>Plan</button>
-<button data-v="recipes"><span class="ico">🍳</span>Recipes</button>
-<button data-v="shop"><span class="ico">🛒</span>Shop</button>
-<button data-v="pantry"><span class="ico">🥫</span>Pantry</button>
-<button data-v="profile"><span class="ico">⚙️</span>Profile</button>
-</nav></div>
-</div>
-
-<div id="modal" class="modal"><div class="sheet" id="sheet"></div></div>
+<header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
+<main id="app"></main>
+<nav>
+<button id="nplan" onclick="show('plan')">📅<br>Plan</button>
+<button id="nrecipes" onclick="show('recipes')">🍳<br>Recipes</button>
+<button id="nshop" onclick="show('shop')">🛒<br>Shop</button>
+<button id="npantry" onclick="show('pantry')">🥫<br>Pantry</button>
+<button id="nprofile" onclick="show('profile')">⚙️<br>Profile</button>
+</nav>
+<dialog id="swapDlg"><div class="modal"><h2>Swap meal</h2><div id="swapList"></div><button class="secondary" onclick="swapDlg.close()">Cancel</button></div></dialog>
 <script>
 const recipes=[
-{id:1,name:"Garlic Chicken & Roasted Broccoli",time:30,cal:520,p:48,c:24,f:24,cuisine:"American",tags:["high-protein"],emoji:"🍗",ings:[["chicken breast","1.5 lb","meat"],["broccoli","2 heads","produce"],["olive oil","2 tbsp","pantry"],["garlic","4 cloves","produce"],["lemon","1","produce"],["salt","1 tsp","pantry"]],steps:["Heat oven to 425°F.","Toss broccoli with olive oil, garlic and salt. Roast 18–20 minutes.","Season chicken, sear in a hot skillet until browned, then cook through.","Finish chicken with lemon juice. Serve with roasted broccoli."]},
-{id:2,name:"Turkey Taco Bowls",time:25,cal:560,p:42,c:52,f:20,cuisine:"Mexican",tags:["high-protein"],emoji:"🌮",ings:[["ground turkey","1.25 lb","meat"],["black beans","1 can","canned"],["rice","1 cup","pantry"],["bell pepper","2","produce"],["salsa","1 cup","condiments"],["avocado","2","produce"]],steps:["Cook rice according to package directions.","Brown turkey with taco seasoning until cooked through.","Sauté sliced peppers until tender.","Build bowls with rice, turkey, beans, peppers, salsa and avocado."]},
-{id:3,name:"Creamy Tuscan Chicken",time:30,cal:610,p:49,c:18,f:37,cuisine:"Italian",tags:["high-protein"],emoji:"🍝",ings:[["chicken breast","1.5 lb","meat"],["baby spinach","5 oz","produce"],["cherry tomatoes","1 pint","produce"],["heavy cream","1 cup","dairy"],["parmesan","1/2 cup","dairy"],["garlic","3 cloves","produce"]],steps:["Season chicken and sear in a skillet until golden and cooked through.","Remove chicken. Sauté garlic and tomatoes.","Add cream and parmesan; simmer until slightly thickened.","Fold in spinach. Return chicken and spoon sauce over the top."]},
-{id:4,name:"Honey-Soy Salmon & Green Beans",time:25,cal:540,p:40,c:31,f:28,cuisine:"Asian-inspired",tags:["high-protein"],emoji:"🐟",ings:[["salmon fillets","4","seafood"],["green beans","1 lb","produce"],["soy sauce","3 tbsp","condiments"],["honey","2 tbsp","condiments"],["rice","1 cup","pantry"],["garlic","2 cloves","produce"]],steps:["Cook rice according to package directions.","Mix soy sauce, honey and garlic.","Sear salmon and brush with sauce; cook until flaky.","Steam or sauté green beans. Serve with rice."]},
-{id:5,name:"Chicken Fajita Sheet Pan",time:30,cal:500,p:45,c:35,f:18,cuisine:"Mexican",tags:["high-protein"],emoji:"🌯",ings:[["chicken breast","1.5 lb","meat"],["bell pepper","3","produce"],["onion","1 large","produce"],["tortillas","8","bakery"],["lime","2","produce"],["fajita seasoning","2 tbsp","spices"]],steps:["Heat oven to 425°F.","Slice chicken, peppers and onion; toss with seasoning and oil.","Roast 20–25 minutes, stirring once.","Finish with lime and serve in warm tortillas."]},
-{id:6,name:"Greek Chicken Pitas",time:20,cal:470,p:39,c:42,f:16,cuisine:"Greek",tags:["high-protein","quick"],emoji:"🥙",ings:[["chicken breast","1.25 lb","meat"],["pita bread","6","bakery"],["cucumber","1","produce"],["tomatoes","2","produce"],["Greek yogurt","1 cup","dairy"],["feta","4 oz","dairy"]],steps:["Season and cook chicken in a skillet; slice.","Chop cucumber and tomatoes.","Mix yogurt with lemon, garlic and salt for a quick sauce.","Fill pitas with chicken, vegetables, feta and sauce."]}
+{id:1,name:"Garlic Chicken & Roasted Broccoli",time:30,cal:520,p:48,c:25,f:24,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",broccoli:"2 heads",garlic:"4 cloves",olive_oil:"2 tbsp",rice:"1 cup"}},
+{id:2,name:"Turkey Taco Bowls",time:25,cal:560,p:42,c:58,f:18,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],ingredients:{ground_turkey:"1.5 lb",rice:"1 cup",black_beans:"1 can",bell_pepper:"2",lime:"2",salsa:"1 jar"}},
+{id:3,name:"Creamy Tuscan Chicken",time:35,cal:610,p:51,c:20,f:34,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",spinach:"5 oz",sun_dried_tomatoes:"1 jar",cream:"1 cup",parmesan:"1/2 cup",garlic:"3 cloves"}},
+{id:4,name:"Honey-Soy Salmon & Green Beans",time:25,cal:590,p:42,c:31,f:34,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],ingredients:{salmon:"1.5 lb",green_beans:"1 lb",soy_sauce:"1/4 cup",honey:"2 tbsp",rice:"1 cup",garlic:"2 cloves"}},
+{id:5,name:"Chicken Fajita Sheet Pan",time:30,cal:500,p:46,c:39,f:17,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",bell_pepper:"3",onion:"1",tortillas:"8",lime:"2",fajita_seasoning:"1 packet"}},
+{id:6,name:"Greek Chicken Pitas",time:25,cal:540,p:45,c:52,f:17,diets:["standard","high-protein"],cuisine:"Greek",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",pitas:"6",cucumber:"1",tomato:"2",greek_yogurt:"1 cup",lemon:"1",feta:"1/2 cup"}},
+{id:7,name:"Beef & Veggie Rice Bowls",time:30,cal:640,p:43,c:57,f:25,diets:["standard","high-protein"],cuisine:"Asian",tags:["high protein"],ingredients:{ground_beef:"1.5 lb",rice:"1 cup",broccoli:"1 head",carrots:"3",soy_sauce:"1/4 cup"}},
+{id:8,name:"Chickpea Coconut Curry",time:30,cal:520,p:18,c:68,f:19,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegetarian","vegan"],ingredients:{chickpeas:"2 cans",coconut_milk:"1 can",spinach:"5 oz",tomatoes:"1 can",curry_powder:"2 tbsp",rice:"1 cup"}},
+{id:9,name:"Black Bean & Sweet Potato Tacos",time:30,cal:490,p:17,c:72,f:14,diets:["vegetarian","vegan"],cuisine:"Mexican",tags:["vegetarian","vegan"],ingredients:{black_beans:"2 cans",sweet_potatoes:"2",tortillas:"8",lime:"2",avocado:"2",cumin:"1 tbsp"}},
+{id:10,name:"Lemon Herb Cod & Potatoes",time:30,cal:480,p:43,c:35,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["pescatarian"],ingredients:{cod:"1.5 lb",potatoes:"1.5 lb",green_beans:"1 lb",lemon:"2",olive_oil:"2 tbsp"}},
+{id:11,name:"Turkey Burger Bowls",time:25,cal:530,p:46,c:37,f:21,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{ground_turkey:"1.5 lb",potatoes:"1.5 lb",lettuce:"1 head",tomato:"2",pickles:"1 jar",cheddar:"1/2 lb"}},
+{id:12,name:"Chicken Parmesan Skillet",time:35,cal:620,p:54,c:34,f:29,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",marinara:"1 jar",mozzarella:"1/2 lb",parmesan:"1/2 cup",pasta:"1 lb"}}
 ];
-let state=JSON.parse(localStorage.mealpilot||'null')||{
-plan:[1,2,3,4,5], servings:2, diet:"Any", maxTime:30, favorites:[1,3], pantry:["olive oil","salt"], done:[], cart:[], search:""
-};
-function save(){localStorage.mealpilot=JSON.stringify(state)}
-function r(id){return recipes.find(x=>x.id==id)}
-function renderPlan(){
- const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
- let html=`<div class="hero"><div class="muted">THIS WEEK</div><div class="big">Your meal plan</div><p class="muted">Built around your preferences, ingredient overlap and time.</p><button class="primary" onclick="autoPlan()">✨ Build a new plan</button></div>
- <div class="card"><div class="row"><div><div class="title">5 dinners</div><div class="muted">${state.servings} servings • ≤ ${state.maxTime} min</div></div><span class="chip">Waste-aware</span></div></div>`;
- state.plan.forEach((id,i)=>{let x=r(id);html+=`<div class="card"><div class="row"><div><div class="muted">${days[i]||"Extra"}</div><div class="title">${x.emoji} ${x.name}</div><p class="muted">${x.time} min • ${x.cal} cal • ${x.p}g protein</p></div><button class="secondary" onclick="swap(${i})">Swap</button></div></div>`});
- document.getElementById("plan").innerHTML=html;
+let state=JSON.parse(localStorage.getItem("mealpilot2")||"null")||{plan:[],pantry:[],favorites:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2}};
+function save(){localStorage.setItem("mealpilot2",JSON.stringify(state))}
+function filtered(){let s=state.settings;return recipes.filter(r=>(s.diet==="standard"||r.diets.includes(s.diet))&&r.time<=s.maxTime&&r.p>=s.minProtein)}
+function generate(){
+ let pool=filtered(); if(pool.length<state.settings.meals){alert("Not enough recipes match your filters. Try a longer cooking time or lower protein requirement.");return}
+ let used=new Set(),out=[];
+ for(let i=0;i<state.settings.meals;i++){
+   let candidates=pool.filter(r=>!used.has(r.id));
+   // Favor ingredient reuse with already selected meals.
+   if(i>0){let ing=new Set(out.flatMap(r=>Object.keys(r.ingredients)));candidates.sort((a,b)=>score(b,ing)-score(a,ing))}
+   let pick=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
+   used.add(pick.id);out.push(pick);
+ }
+ state.plan=out;save();show("plan")
 }
-function autoPlan(){
- let pool=recipes.filter(x=>x.time<=state.maxTime && (state.diet=="Any"||state.diet=="High protein"&&x.tags.includes("high-protein")));
- pool=pool.sort(()=>Math.random()-.5);
- state.plan=pool.slice(0,Math.min(5,pool.length)).map(x=>x.id); rebuildCart();save();renderPlan();renderShop();
+function score(r,ing){return Object.keys(r.ingredients).filter(x=>ing.has(x)).length}
+function planView(){
+ let p=state.plan;return `<h2>This Week</h2>
+ <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><button onclick="generate()">Generate My Week</button></div></div>
+ ${p.length?p.map((r,i)=>`<div class="card meal"><div><small>${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][i]}</small><strong>${r.name}</strong><small>${r.time} min · ${r.cal} cal · ${r.p}g protein</small></div><button class="secondary" onclick="openSwap(${i})">Swap</button></div>`).join(""):`<div class="card empty">No plan yet.<br>Tap <b>Generate My Week</b> to build one.</div>`}
+ ${p.length?`<div class="card"><div class="actions"><button onclick="show('shop')">View Grocery List</button><button class="secondary" onclick="cook(${p[0].id})">Start Cooking</button></div></div>`:""}`;
 }
-function swap(i){let current=state.plan[i];let candidates=recipes.filter(x=>x.id!==current&&x.time<=state.maxTime);state.plan[i]=candidates[Math.floor(Math.random()*candidates.length)].id;rebuildCart();save();renderPlan();renderShop()}
-function rebuildCart(){
- const map={}; state.plan.forEach(id=>r(id).ings.forEach(([name,q,cat])=>{let key=name.toLowerCase(); if(!map[key])map[key]={name,q,cat,recipes:[]}; map[key].recipes.push(r(id).name)}));
- state.cart=Object.values(map).map(x=>({...x,checked:false})); save();
+function openSwap(i){let list=filtered().map(r=>`<div class="card"><div class="row"><div><b>${r.name}</b><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div></div><button onclick="doSwap(${i},${r.id})">Choose</button></div></div>`).join("");swapList.innerHTML=list;swapDlg.showModal()}
+function doSwap(i,id){state.plan[i]=recipes.find(r=>r.id===id);save();swapDlg.close();show("plan")}
+function recipesView(){
+ return `<div class="row"><h2>Recipes</h2><button onclick="generate()">Build Week</button></div>
+ <div class="card"><input id="search" type="text" placeholder="Search recipes..." oninput="renderRecipes()"></div><div id="recipeList"></div>`;
 }
 function renderRecipes(){
- let q=state.search.toLowerCase();
- let list=recipes.filter(x=>!q||x.name.toLowerCase().includes(q)||x.cuisine.toLowerCase().includes(q));
- document.getElementById("recipes").innerHTML=`<div class="row"><div><div class="title">Recipes</div><div class="muted">Original starter library</div></div></div>
- <div class="card"><input placeholder="Search recipes or cuisine" value="${state.search}" oninput="state.search=this.value;renderRecipes()"></div>
- <div class="grid">${list.map(x=>`<div class="meal" onclick="showRecipe(${x.id})"><div class="recipe-img">${x.emoji}</div><h3>${x.name}</h3><p>${x.time} min • ${x.cal} cal</p><p>${x.p}g protein</p></div>`).join("")}</div>`;
+ let q=(document.getElementById("search")?.value||"").toLowerCase();
+ let list=recipes.filter(r=>r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q));
+ document.getElementById("recipeList").innerHTML=list.map(r=>`<div class="card recipe"><div class="row"><div><h3>${r.name}</h3><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div></div><button onclick="cook(${r.id})">Cook</button></div><div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><div class="meta" style="margin-top:9px">${Object.entries(r.ingredients).map(([k,v])=>`${k.replaceAll("_"," ")}: ${v}`).join(" · ")}</div></div>`).join("");
 }
-function showRecipe(id){
- let x=r(id),fav=state.favorites.includes(id);
- document.getElementById("sheet").innerHTML=`<div class="row"><div class="title">${x.emoji} ${x.name}</div><button class="secondary" onclick="closeModal()">✕</button></div>
- <p class="muted">${x.time} min • ${x.cal} calories • ${x.p}g protein • ${x.cuisine}</p>
- <button class="${fav?'secondary':'primary'}" onclick="toggleFav(${id})">${fav?'♥ Favorited':'♡ Favorite'}</button>
- <h3>Ingredients</h3>${x.ings.map(i=>`<div class="check"><span>${i[1]} ${i[0]}</span><small class="muted">${i[2]}</small></div>`).join("")}
- <h3>Instructions</h3>${x.steps.map((s,i)=>`<div class="check"><b>${i+1}.</b><span>${s}</span></div>`).join("")}
- <button class="primary" style="width:100%;margin-top:12px" onclick="cook(${id})">👨‍🍳 Cook this</button>`;
- document.getElementById("modal").style.display="flex";
+function shopView(){
+ let counts={};for(const r of state.plan)for(const [k,v] of Object.entries(r.ingredients)){counts[k]=(counts[k]||[]).concat([v])}
+ return `<h2>Grocery List</h2><div class="card notice">Quantities are combined from your current weekly plan. Pantry items can be removed from the shopping list in the Pantry tab.</div>
+ <div class="card">${Object.keys(counts).length?Object.entries(counts).map(([k,vs])=>`<div class="listitem"><input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''"><span><b>${k.replaceAll("_"," ")}</b><br><small>${vs.join(" + ")} · ${state.settings.servings} servings</small></span></div>`).join(""):`<div class="empty">Generate a weekly plan first.</div>`}</div>
+ <div class="card"><div class="actions"><button onclick="alert('Target handoff is the next integration milestone. Your Target password will never be stored in MealPilot.')">Send to Target</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div></div>`;
 }
-function toggleFav(id){if(state.favorites.includes(id))state.favorites=state.favorites.filter(x=>x!==id);else state.favorites.push(id);save();showRecipe(id);renderRecipes()}
-function cook(id){let x=r(id);document.getElementById("sheet").innerHTML=`<div class="row"><div><div class="muted">COOKING MODE</div><div class="title">${x.emoji} ${x.name}</div></div><button class="secondary" onclick="closeModal()">✕</button></div><div id="cookstep"></div>`;let n=0;function draw(){document.getElementById("cookstep").innerHTML=`<div class="progress"><div style="width:${(n/x.steps.length)*100}%"></div></div><div class="muted" style="margin-top:12px">Step ${n+1} of ${x.steps.length}</div><div class="step">${x.steps[n]}</div><div class="row"><button class="secondary" onclick="${n>0?'n--;draw()':''}">Back</button><button class="primary" onclick="${n<x.steps.length-1?'n++;draw()':'finishCook('+id+')'}">${n<x.steps.length-1?'Next':'Done'}</button></div>`}draw()}
-function finishCook(id){state.done.push(id);save();closeModal();renderPlan()}
-function renderShop(){
- let groups={};state.cart.forEach((x,i)=>(groups[x.cat]??=[]).push({...x,i}));
- let body=Object.entries(groups).map(([cat,items])=>`<div class="card"><div class="title">${cat[0].toUpperCase()+cat.slice(1)}</div>${items.map(x=>`<div class="check"><input type="checkbox" ${x.checked?'checked':''} onchange="state.cart[${x.i}].checked=this.checked;save();renderShop()"><span style="flex:1;${x.checked?'text-decoration:line-through;color:#999':''}">${x.q} ${x.name}<small class="muted" style="display:block">${x.recipes.join(", ")}</small></span></div>`).join("")}</div>`).join("");
- document.getElementById("shop").innerHTML=`<div class="row"><div><div class="title">Grocery list</div><div class="muted">${state.cart.filter(x=>!x.checked).length} items remaining</div></div><button class="secondary" onclick="rebuildCart();renderShop()">Refresh</button></div>
- <div class="hero" style="margin-top:12px"><div class="big">Shop smarter</div><p class="muted">Your ingredients are combined across the week's recipes.</p><button class="primary" onclick="target()">🛒 Send to Target</button></div>${body}`;
-}
-function target(){alert("Target connection is the next integration milestone. The current app creates the exact grocery basket that will be passed to the authorized Target shopping flow; no Target password is stored here.")}
-function renderPantry(){document.getElementById("pantry").innerHTML=`<div class="title">Pantry & fridge</div><p class="muted">Tell the planner what you already have so it can reduce duplicate purchases.</p><div class="card"><input id="newPantry" placeholder="Add an item, e.g. eggs"><button class="primary" style="width:100%;margin-top:10px" onclick="addPantry()">Add item</button></div><div class="card">${state.pantry.map((x,i)=>`<div class="check"><span>${x}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();renderPantry()">Remove</button></div>`).join("")||'<div class="muted">Nothing added yet.</div>'}</div>`}
-function addPantry(){let x=document.getElementById("newPantry").value.trim();if(x){state.pantry.push(x);save();renderPantry()}}
-function renderProfile(){document.getElementById("profile").innerHTML=`<div class="title">Preferences</div><p class="muted">These control the planner.</p><div class="card"><label>Servings</label><select onchange="state.servings=+this.value;save();renderProfile()">${[1,2,3,4,5,6].map(n=>`<option ${state.servings==n?'selected':''}>${n}</option>`).join("")}</select>
-<label>Diet</label><select onchange="state.diet=this.value;save()"><option>Any</option><option ${state.diet=="High protein"?"selected":""}>High protein</option></select>
-<label>Maximum cooking time</label><select onchange="state.maxTime=+this.value;save()"><option ${state.maxTime==20?"selected":""}>20</option><option ${state.maxTime==30?"selected":""}>30</option><option ${state.maxTime==45?"selected":""}>45</option></select></div>
-<div class="card"><div class="title">Favorites</div><p class="muted">${state.favorites.length} saved recipes</p></div>
-<div class="card"><div class="title">Target</div><p class="muted">Shopping integration placeholder. We'll connect the authorized Target experience once the basket engine is proven.</p></div>`}
-function closeModal(){document.getElementById("modal").style.display="none"}
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.v).classList.add("active");if(b.dataset.v=="plan")renderPlan();if(b.dataset.v=="recipes")renderRecipes();if(b.dataset.v=="shop")renderShop();if(b.dataset.v=="pantry")renderPantry();if(b.dataset.v=="profile")renderProfile()});
-rebuildCart();renderPlan();
+function pantryView(){return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div></div><div class="card">${state.pantry.length?state.pantry.map((x,i)=>`<div class="listitem"><span>${x}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
+function addPantry(){let x=document.getElementById("pantryInput").value.trim();if(x){state.pantry.push(x);save();show("pantry")}}
+function profileView(){let s=state.settings;return `<h2>Preferences</h2><div class="card">
+<label>Diet</label><select id="diet"><option value="standard">Standard</option><option value="high-protein">High protein</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select>
+<label>Maximum cooking time</label><select id="maxTime"><option>20</option><option>30</option><option>45</option></select>
+<label>Meals per week</label><select id="meals"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+<label>Minimum protein per meal (g)</label><input id="minProtein" type="number" min="0" step="5" value="${s.minProtein}">
+<label>Servings</label><select id="servings"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+<br><br><button onclick="savePrefs()">Save Preferences & Generate</button></div>
+<script>document.getElementById("diet").value="${s.diet}";document.getElementById("maxTime").value="${s.maxTime}";document.getElementById("meals").value="${s.meals}";document.getElementById("servings").value="${s.servings}";</script>`}
+function savePrefs(){state.settings={diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value};save();generate()}
+function cook(id){let r=recipes.find(x=>x.id===id),steps=["Gather and prep all ingredients.","Season the main protein and prepare the vegetables.","Cook the protein until done.","Cook or roast the vegetables and starch.","Combine and finish with the sauce or seasoning.","Plate and serve."];let i=0;let d=document.createElement("dialog");d.innerHTML=`<div class="modal"><h2>${r.name}</h2><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div><br><div class="progress"><div id="bar" style="width:17%"></div></div><p id="step" style="font-size:22px;line-height:1.4;margin:30px 0">${steps[0]}</p><div class="row"><button class="secondary" id="back">Back</button><button id="next">Next</button></div></div>`;document.body.appendChild(d);d.showModal();function upd(){step.textContent=steps[i];bar.style.width=((i+1)/steps.length*100)+"%";back.disabled=i===0;next.textContent=i===steps.length-1?"Done":"Next"}back.onclick=()=>{if(i>0){i--;upd()}};next.onclick=()=>{if(i<steps.length-1){i++;upd()}else d.close()};d.addEventListener("close",()=>d.remove());}
+function show(page){document.querySelectorAll("nav button").forEach(b=>b.classList.remove("navactive"));document.getElementById("n"+page).classList.add("navactive");let el=document.getElementById("app");el.innerHTML=page==="plan"?planView():page==="recipes"?recipesView():page==="shop"?shopView():page==="pantry"?pantryView():profileView();if(page==="recipes")renderRecipes()}
+show("plan");
 </script>
 </body></html>
