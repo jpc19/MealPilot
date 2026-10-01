@@ -1034,4 +1034,103 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
   }};
 })();
 </script>
+
+<style id="mealpilot-v24-photos">
+/* v2.4 visual/photo layer — functionality untouched */
+.mp13-photo{height:150px!important;position:relative!important;overflow:hidden!important;background:#e9f2ed!important}
+.mp13-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease,filter .35s ease}
+.mp13-card:hover .mp13-photo img{transform:scale(1.035)}
+.mp13-card{border:0!important;box-shadow:0 10px 28px rgba(18,34,27,.09)!important}
+.mp13-body{padding:14px!important}
+.mp13-title{font-size:15.5px!important;letter-spacing:-.02em}
+.mp13-meta{font-size:12px!important}
+.mp13-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b6f4a,#18a66c)!important;min-height:184px;display:flex;flex-direction:column;justify-content:flex-end}
+.mp13-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,35,24,.02),rgba(5,35,24,.44));pointer-events:none}
+.mp13-hero>*{position:relative;z-index:1}
+.mp13-hero-photo{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;opacity:.34!important;filter:saturate(1.08)!important}
+.mp13-hero-copy{position:relative;z-index:2}
+.mp14-cover{height:245px!important;position:relative!important;overflow:hidden!important;background:#dfeee7!important}
+.mp14-cover img{width:100%;height:100%;display:block;object-fit:cover}
+.mp14-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.16));pointer-events:none}
+.meal-photo{width:74px;height:74px;border-radius:18px;overflow:hidden;flex:0 0 74px;background:#e8f2ed;box-shadow:0 6px 16px rgba(18,34,27,.09)}
+.meal-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.meal-photo-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;background:linear-gradient(135deg,#e8f7f0,#f5f8f6)}
+.meal.has-photo{display:flex!important;gap:13px}
+.meal.has-photo>.actions{flex:0 0 auto}
+@media(max-width:520px){.meal.has-photo{align-items:flex-start!important}.meal-photo{width:68px;height:68px;flex-basis:68px}.meal.has-photo>.actions{width:100%;margin-top:10px}.meal.has-photo{flex-wrap:wrap}}
+.mp-photo-credit{font-size:10px;color:#7b8781;text-align:right;margin-top:8px}
+</style>
+<script>
+(function(){
+  const PHOTO_BASE='https://images.pexels.com/photos/';
+  const photos={
+    chicken:PHOTO_BASE+'24738519/pexels-photo-24738519.jpeg?auto=compress&cs=tinysrgb&w=900',
+    salmon:PHOTO_BASE+'36964109/pexels-photo-36964109.jpeg?auto=compress&cs=tinysrgb&w=900',
+    mexican:PHOTO_BASE+'27603310/pexels-photo-27603310.jpeg?auto=compress&cs=tinysrgb&w=900',
+    pasta:PHOTO_BASE+'18712233/pexels-photo-18712233.jpeg?auto=compress&cs=tinysrgb&w=900',
+    curry:PHOTO_BASE+'10464100/pexels-photo-10464100.jpeg?auto=compress&cs=tinysrgb&w=900',
+    breakfast:PHOTO_BASE+'7535151/pexels-photo-7535151.jpeg?auto=compress&cs=tinysrgb&w=900',
+    shrimp:PHOTO_BASE+'11015917/pexels-photo-11015917.jpeg?auto=compress&cs=tinysrgb&w=900'
+  };
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function keyFor(name,cuisine){
+    const n=(name||'').toLowerCase(), c=(cuisine||'').toLowerCase();
+    if(/salmon|cod|fish/.test(n)) return 'salmon';
+    if(/shrimp|prawn/.test(n)) return 'shrimp';
+    if(/taco|burrito|fajita|enchilada/.test(n)||c==='mexican') return 'mexican';
+    if(/pasta|noodle|parmesan|caprese/.test(n)||c==='italian') return 'pasta';
+    if(/curry/.test(n)||c==='indian') return 'curry';
+    if(/oat|toast|egg|breakfast|yogurt/.test(n)||/breakfast/.test(c)) return 'breakfast';
+    return 'chicken';
+  }
+  function img(url,alt,cls){
+    return '<img class="'+(cls||'')+'" src="'+url+'" alt="'+esc(alt)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.classList.add(\'photo-failed\')">';
+  }
+  function recipeByName(name){
+    const rs=window.MealPilotRecipes||window.recipes||[];
+    return rs.find(r=>String(r.name||r.title||'').toLowerCase()===String(name||'').toLowerCase());
+  }
+  function decorateDiscover(){
+    const root=document.getElementById('mp13-discover'); if(!root)return;
+    root.querySelectorAll('.mp13-card').forEach(card=>{
+      const title=card.querySelector('.mp13-title'); if(!title || card.dataset.photoReady)return;
+      const r=recipeByName(title.textContent.trim()); if(!r)return;
+      const box=card.querySelector('.mp13-photo'); if(!box)return;
+      const url=photos[keyFor(r.name,r.cuisine)];
+      box.innerHTML=img(url,r.name,'');
+      card.dataset.photoReady='1';
+    });
+    const hero=root.querySelector('.mp13-hero');
+    if(hero && !hero.querySelector('.mp13-hero-photo')){
+      const image=document.createElement('img'); image.className='mp13-hero-photo'; image.src=photos.chicken; image.alt='Fresh meal'; image.loading='lazy'; image.referrerPolicy='no-referrer'; hero.insertBefore(image,hero.firstChild);
+    }
+  }
+  function decorateRecipe(){
+    const ov=document.getElementById('mp14-overlay'); if(!ov)return;
+    const title=ov.querySelector('.mp14-title'); const cover=ov.querySelector('.mp14-cover');
+    if(!title||!cover||cover.dataset.photoReady)return;
+    const r=recipeByName(title.textContent.trim()); if(!r)return;
+    cover.innerHTML=img(photos[keyFor(r.name,r.cuisine)],r.name,'');
+    cover.dataset.photoReady='1';
+    if(!ov.querySelector('.mp-photo-credit')){const c=document.createElement('div');c.className='mp-photo-credit';c.textContent='Food photography: Pexels';const content=ov.querySelector('.mp14-content');if(content)content.appendChild(c)}
+  }
+  function decoratePlan(){
+    const app=document.getElementById('app'); if(!app)return;
+    app.querySelectorAll('.meal').forEach(meal=>{
+      if(meal.classList.contains('has-photo'))return;
+      const strong=meal.querySelector('strong'); if(!strong)return;
+      const r=recipeByName(strong.textContent.trim()); if(!r)return;
+      const actions=meal.querySelector('.actions');
+      if(!actions)return;
+      const box=document.createElement('div'); box.className='meal-photo'; box.innerHTML=img(photos[keyFor(r.name,r.cuisine)],r.name,'');
+      meal.insertBefore(box,meal.firstChild);meal.classList.add('has-photo');
+    });
+  }
+  function run(){decorateDiscover();decorateRecipe();decoratePlan()}
+  const mo=new MutationObserver(()=>requestAnimationFrame(run));
+  mo.observe(document.body,{childList:true,subtree:true});
+  setTimeout(run,700);setTimeout(run,1600);setTimeout(run,3000);
+})();
+</script>
+
 </body></html>
