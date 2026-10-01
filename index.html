@@ -353,7 +353,7 @@ function recipesView(){
 }
 let recipeFilter='all';
 function toggleFavorite(id){state.favorites??=[];let i=state.favorites.indexOf(id);if(i>=0)state.favorites.splice(i,1);else state.favorites.push(id);save();renderRecipes();toast(i>=0?'Removed from favorites':'Saved to favorites')}
-function recipeDetail(id){let r=recipes.find(x=>x.id===id);let d=document.createElement('dialog');d.className='recipeDetail';let fav=(state.favorites||[]).includes(id);d.innerHTML=`<div class="modal"><div class="row"><h2>${r.name}</h2><button class="secondary" onclick="this.closest('dialog').close()">Close</button></div><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein · ${state.settings.servings||2} servings</div><div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><h3 class="sectionTitle">Ingredients</h3>${Object.entries(r.ingredients).map(([k,v])=>`<div class="ingredientRow"><span>${displayName(k)}</span><b>${scaledIngredient(v)}</b></div>`).join('')}<h3 class="sectionTitle">Cooking</h3><div class="mutedbox">${r.time} minutes total. Use Cooking Mode for step-by-step instructions, timers, ingredient checklist, and read-aloud.</div><div class="actions" style="margin-top:14px"><button onclick="this.closest('dialog').close();cook(${id})">Start Cooking</button><button class="primary" onclick="this.closest('dialog').close();MealPilotAddToPlan.openById(id)">Add to Plan</button><button class="secondary" onclick="toggleFavorite(${id});this.closest('dialog').close()">${fav?'★ Remove Favorite':'☆ Favorite'}</button></div></div>`;document.body.appendChild(d);d.addEventListener('close',()=>d.remove());d.showModal()}
+function recipeDetail(id){let r=recipes.find(x=>x.id===id);let d=document.createElement('dialog');d.className='recipeDetail';let fav=(state.favorites||[]).includes(id);d.innerHTML=`<div class="modal"><div class="row"><h2>${r.name}</h2><button class="secondary" onclick="this.closest('dialog').close()">Close</button></div><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein · ${state.settings.servings||2} servings</div><div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><h3 class="sectionTitle">Ingredients</h3>${Object.entries(r.ingredients).map(([k,v])=>`<div class="ingredientRow"><span>${displayName(k)}</span><b>${scaledIngredient(v)}</b></div>`).join('')}<h3 class="sectionTitle">Cooking</h3><div class="mutedbox">${r.time} minutes total. Use Cooking Mode for step-by-step instructions, timers, ingredient checklist, and read-aloud.</div><div class="actions" style="margin-top:14px"><button onclick="this.closest('dialog').close();cook(${id})">Start Cooking</button><button class="primary" onclick="this.closest('dialog').close();MealPilotAddToPlan.openById(${JSON.stringify(id)})">Add to Plan</button><button class="secondary" onclick="toggleFavorite(${id});this.closest('dialog').close()">${fav?'★ Remove Favorite':'☆ Favorite'}</button></div></div>`;document.body.appendChild(d);d.addEventListener('close',()=>d.remove());d.showModal()}
 function renderRecipes(){
  let q=(document.getElementById("search")?.value||"").toLowerCase();
  let list=recipes.filter(r=>r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q));
@@ -776,28 +776,34 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
 <script>
 (function(){
   function addToPlan(r){
-    if(!r || !Array.isArray(state.plan)) return;
+    if(!r) return;
     const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-    const existing=state.plan.length;
+    const plan=state.plan||[];
+    const nextOpen=Math.min(plan.length, days.length-1);
     const ov=document.createElement('div');
     ov.className='mp-add-overlay';
-    ov.innerHTML='<div class="mp-add-sheet"><div class="mp-add-head"><div><div class="mp-add-eyebrow">Add to plan</div><h2>'+String(r.name||r.title||'Recipe').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</h2></div><button class="mp-add-close" id="mp-add-close">×</button></div><p class="mp-add-help">Choose a day. Existing meals will be replaced; the first open day adds the meal.</p><div class="mp-add-days">'+days.map((d,i)=>{const has=i<existing;const label=has?'Replace '+d:'Add to '+d;return '<button class="mp-add-day" data-day="'+i+'"><span>'+d+'</span><small>'+label+'</small></button>'}).join('')+'</div></div>';
+    ov.innerHTML='<div class="mp-add-sheet"><div class="mp-add-head"><div><div class="mp-add-eyebrow">Add to plan</div><h2>'+String(r.name||r.title||'Recipe').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</h2></div><button class="mp-add-close" id="mp-add-close">×</button></div><p class="mp-add-help">Choose a day. Existing meals will be replaced. The next open day is available for adding.</p><div class="mp-add-days">'+days.map((d,i)=>{const exists=i<plan.length;const enabled=exists||i===nextOpen;const label=exists?'Replace '+d:(enabled?'Add to '+d:'Add meals in order');return '<button class="mp-add-day" data-day="'+i+'" '+(enabled?'':'disabled')+'><span>'+d+'</span><small>'+label+'</small></button>'}).join('')+'</div></div>';
     document.body.appendChild(ov);
     ov.querySelector('#mp-add-close').onclick=()=>ov.remove();
     ov.addEventListener('click',e=>{if(e.target===ov)ov.remove()});
     ov.querySelectorAll('.mp-add-day:not([disabled])').forEach(btn=>btn.onclick=()=>{
       const i=Number(btn.dataset.day);
+      if(i>state.plan.length)return;
       state.plan[i]=r;
       state.cookedPlan??={};
       delete state.cookedPlan[i];
       save();
       ov.remove();
-      document.querySelectorAll('.mp14-overlay').forEach(x=>x.remove());
+      document.querySelectorAll('.mp14-overlay,.recipeDetail').forEach(x=>x.remove());
       show('plan');
       if(typeof toast==='function')toast((r.name||'Recipe')+' added to '+days[i]);
     });
   }
-  window.MealPilotAddToPlan={open:addToPlan,openById:function(id){var list=window.MealPilotRecipes||[];var r=list.find(function(x){return String(x.id)===String(id)});if(r)addToPlan(r)}};
+  window.MealPilotAddToPlan={open:addToPlan,openById:function(id){
+    const list=window.MealPilotRecipes||[];
+    const r=list.find(x=>String(x.id)===String(id)||String(x.name)===String(id));
+    if(r)addToPlan(r); else if(typeof toast==='function')toast('Recipe could not be found');
+  }};
 })();
 </script>
 </body></html>
