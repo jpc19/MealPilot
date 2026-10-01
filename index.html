@@ -29,6 +29,7 @@ label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 
 .swapOption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
 .swapOption:last-child{border-bottom:0}.swapInfo{min-width:0}.swapName{font-weight:750;font-size:15px}.swapReason{font-size:12px;color:#15803d;margin-top:5px}.swapCurrent{background:#f0f1f3;border-radius:14px;padding:12px;margin:10px 0 12px}.swapSearch{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:none;margin-bottom:8px}
+ .sectiontitle{font-weight:750;margin-bottom:6px}
 </style>
 <style>
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;z-index:30;box-shadow:0 8px 30px #0003;font-size:13px;max-width:90%;text-align:center}.fav{font-size:20px;background:transparent!important;color:#6b7280!important;padding:5px}.fav.on{color:#b45309!important}.recipeTap{cursor:pointer}.historyItem{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;background:#f0f1f3;font-size:12px}.sectionTitle{margin:18px 2px 8px}.mutedbox{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;color:var(--muted)}button:disabled{opacity:.45}.recipeDetail h2{margin-top:0}.recipeDetail .ingredientRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
@@ -546,8 +547,41 @@ function targetRequest(){let groups=groceryData(),lines=[];for(const g of Object
 async function copyTargetRequest(){let txt=targetRequest();try{await navigator.clipboard.writeText(txt);alert("Target cart request copied. Open ChatGPT, select @Target, and paste it.")}catch(e){prompt("Copy this Target request:",txt)}}
 function openTargetHandoff(){let txt=targetRequest();let url="https://chatgpt.com/?q="+encodeURIComponent(txt);window.open(url,"_blank");alert("I’m opening ChatGPT with your MealPilot Target request. If @Target is not selected automatically, tap the + / menu and choose Target, then send the request.")}
 function addCustomGrocery(){let x=prompt("What do you need?");if(x&&x.trim()){state.customGroceries??=[];state.customGroceries.push(x.trim());save();show("shop")}}
-function pantryView(){let items=pantryEntries();return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div><div class="meta" style="margin-top:10px">For now, adding an item means you have enough for the plan. Quantity tracking will be expanded later.</div></div><div class="card">${items.length?items.map((x,i)=>`<div class="listitem"><span>${x.name}${x.qty?` <small class="meta">· ${x.qty}</small>`:""}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
-function addPantry(){let x=document.getElementById("pantryInput").value.trim();if(x){state.pantry??=[];state.pantry.push(x);save();show("pantry")}}
+function pantryView(){
+ let items=pantryEntries();
+ return `<h2>Pantry</h2>
+ <div class="card">
+  <div class="sectiontitle">Add what you already have</div>
+  <div class="meta" style="margin-bottom:10px">MealPilot will keep pantry items off your grocery list when they can satisfy a recipe ingredient.</div>
+  <input id="pantryInput" type="text" placeholder="e.g. olive oil" style="width:100%;margin-bottom:8px">
+  <div class="row" style="gap:8px">
+   <input id="pantryQty" type="number" min="0" step="0.1" placeholder="Qty" style="max-width:100px">
+   <select id="pantryUnit" style="max-width:120px"><option value="">Unit</option><option>oz</option><option>lb</option><option>cup</option><option>tbsp</option><option>tsp</option><option>each</option><option>can</option><option>package</option></select>
+   <button onclick="addPantry()">Add</button>
+  </div>
+ </div>
+ <div class="card">
+  <div class="row"><div><b>${items.length} pantry item${items.length===1?'':'s'}</b><div class="meta">Tap an item to update its quantity.</div></div><button class="secondary" onclick="clearPantry()">Clear</button></div>
+  <div style="margin-top:10px">${items.length?items.map((x,i)=>`<div class="listitem">
+    <div onclick="editPantry(${i})" style="flex:1;cursor:pointer"><b>${x.name}</b><div class="meta">${x.qty!==null&&x.qty!==undefined&&x.qty!==''?`${x.qty}${x.unit?' '+x.unit:''}`:'Enough for this plan'}</div></div>
+    <button class="secondary" onclick="removePantry(${i})">Remove</button>
+   </div>`).join(""):`<div class="empty">Nothing in your pantry yet. Add staples, leftovers, or ingredients you want MealPilot to use first.</div>`}</div>
+ </div>`
+}
+function addPantry(){
+ let name=document.getElementById("pantryInput").value.trim();
+ let qty=document.getElementById("pantryQty").value;
+ let unit=document.getElementById("pantryUnit").value;
+ if(!name)return;
+ state.pantry??=[];
+ let existing=state.pantry.find(x=>(typeof x==='string'?x:x.name).toLowerCase()===name.toLowerCase());
+ if(existing){ if(typeof existing==='string'){let idx=state.pantry.indexOf(existing);state.pantry[idx]={name:existing,qty:qty||null,unit:unit||''}} else {existing.qty=qty||null;existing.unit=unit||''} }
+ else state.pantry.push({name,qty:qty||null,unit:unit||''});
+ save();show('pantry');
+}
+function removePantry(i){state.pantry.splice(i,1);save();show('pantry')}
+function editPantry(i){let x=pantryEntries()[i];if(!x)return;let qty=prompt(`Quantity for ${x.name}`,x.qty??'');if(qty===null)return;let unit=prompt('Unit (oz, lb, cup, tbsp, tsp, each, can, package)',x.unit||'');state.pantry[i]={name:x.name,qty:qty||null,unit:unit||''};save();show('pantry')}
+function clearPantry(){if(confirm('Remove all pantry items?')){state.pantry=[];save();show('pantry')}}
 function profileView(){let s=state.settings;let hist=state.cookedHistory||[];return `<h2>Preferences</h2><div class="card">
 <label>Diet</label><select id="diet"><option value="standard">Standard</option><option value="high-protein">High protein</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select>
 <label>Maximum cooking time</label><select id="maxTime"><option>20</option><option>30</option><option>45</option></select>
