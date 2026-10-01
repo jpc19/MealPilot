@@ -775,12 +775,12 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
 <script>
 (function(){
   function addToPlan(r){
-    if(!r || !window.state || !Array.isArray(state.plan)) return;
+    if(!r || !Array.isArray(state.plan)) return;
     const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     const existing=state.plan.length;
     const ov=document.createElement('div');
     ov.className='mp-add-overlay';
-    ov.innerHTML='<div class="mp-add-sheet"><div class="mp-add-head"><div><div class="mp-add-eyebrow">Add to plan</div><h2>'+String(r.name||r.title||'Recipe').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</h2></div><button class="mp-add-close" id="mp-add-close">×</button></div><p class="mp-add-help">Choose a day. Existing meals will be replaced; the first open day adds the meal.</p><div class="mp-add-days">'+days.map((d,i)=>{const has=i<existing;const disabled=i>existing;const label=has?'Replace '+d:(i===existing?'Add to '+d:'Unavailable');return '<button class="mp-add-day '+(disabled?'disabled':'')+'" data-day="'+i+'" '+(disabled?'disabled':'')+'><span>'+d+'</span><small>'+label+'</small></button>'}).join('')+'</div></div>';
+    ov.innerHTML='<div class="mp-add-sheet"><div class="mp-add-head"><div><div class="mp-add-eyebrow">Add to plan</div><h2>'+String(r.name||r.title||'Recipe').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</h2></div><button class="mp-add-close" id="mp-add-close">×</button></div><p class="mp-add-help">Choose a day. Existing meals will be replaced; the first open day adds the meal.</p><div class="mp-add-days">'+days.map((d,i)=>{const has=i<existing;const label=has?'Replace '+d:'Add to '+d;return '<button class="mp-add-day" data-day="'+i+'"><span>'+d+'</span><small>'+label+'</small></button>'}).join('')+'</div></div>';
     document.body.appendChild(ov);
     ov.querySelector('#mp-add-close').onclick=()=>ov.remove();
     ov.addEventListener('click',e=>{if(e.target===ov)ov.remove()});
