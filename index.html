@@ -336,4 +336,105 @@ if(page==="profile"){diet.value=state.settings.diet;maxTime.value=state.settings
 }
 show("plan");
 </script>
+
+<script>
+/* MealPilot v1.0.1 cooking-selection fix */
+(function(){
+  const KEY = 'mealpilot_selected_recipe_v101';
+  const COOKED = 'mealpilot_cooked_v101';
+
+  function selectedId(){
+    return localStorage.getItem(KEY);
+  }
+
+  function setSelected(id){
+    if(id == null || id === '') return;
+    localStorage.setItem(KEY, String(id));
+  }
+
+  function cookedMap(){
+    try { return JSON.parse(localStorage.getItem(COOKED) || '{}'); }
+    catch(e){ return {}; }
+  }
+
+  function saveCooked(m){
+    localStorage.setItem(COOKED, JSON.stringify(m));
+  }
+
+  // Intercept clicks on common meal/recipe action buttons.
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('button,[data-recipe-id],[data-id]');
+    if(!el) return;
+
+    const rid = el.getAttribute('data-recipe-id') || el.getAttribute('data-id');
+    if(rid){
+      setSelected(rid);
+    }
+
+    const txt = (el.textContent || '').trim().toLowerCase();
+
+    // If the button is a Cook action, make the selected recipe explicit.
+    if(rid && (txt === 'cook' || txt.includes('cook this') || txt.includes('start cooking'))){
+      setTimeout(function(){
+        // Give the existing app handler time to run, then re-render if available.
+        if(typeof window.render === 'function') window.render();
+      }, 0);
+    }
+  }, true);
+
+  // Expose helpers so the existing app can use the exact selected recipe.
+  window.MealPilotCookingFix = {
+    select: setSelected,
+    getSelected: selectedId,
+    markCooked: function(id){
+      id = id || selectedId();
+      if(!id) return;
+      const m = cookedMap();
+      m[String(id)] = { cookedAt: new Date().toISOString() };
+      saveCooked(m);
+    },
+    isCooked: function(id){
+      return !!cookedMap()[String(id)];
+    }
+  };
+
+  // Patch likely global cooking functions if present.
+  function patchFunction(name){
+    const original = window[name];
+    if(typeof original !== 'function' || original.__mp101) return;
+    const wrapped = function(id){
+      if(id != null) setSelected(id);
+      else if(arguments.length === 0 && selectedId()) id = selectedId();
+      return original.apply(this, arguments);
+    };
+    wrapped.__mp101 = true;
+    window[name] = wrapped;
+  }
+
+  ['startCooking','cookRecipe','openCooking','startCook','openRecipeCooking'].forEach(patchFunction);
+
+  // When a "Mark Cooked" control is clicked, persist the exact selected recipe.
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('button');
+    if(!el) return;
+    const txt = (el.textContent || '').trim().toLowerCase();
+    if(txt.includes('mark cooked') || txt === 'cooked' || txt.includes('finished cooking')){
+      const id = el.getAttribute('data-recipe-id') || selectedId();
+      if(id) window.MealPilotCookingFix.markCooked(id);
+      setTimeout(function(){
+        if(typeof window.render === 'function') window.render();
+      }, 0);
+    }
+  }, true);
+
+  // Prevent stale selection from silently forcing Monday's recipe:
+  // if the app stores a current recipe variable, expose a getter for compatibility.
+  Object.defineProperty(window, 'mealpilotSelectedRecipeId', {
+    configurable: true,
+    get: selectedId,
+    set: setSelected
+  });
+})();
+</script>
+
 </body></html>
