@@ -184,43 +184,65 @@ body{background:var(--mp13-bg)!important;color:var(--mp13-text)!important;font-f
 @media(min-width:700px){.mp14-sheet{max-width:680px;border-radius:26px;margin-bottom:20px}.mp14-overlay{align-items:center}}
 </style>
 
-<style id="mealpilot-v15">
+<style id="mealpilot-v152-visual">
 :root{
- --mp-green:#18a66b;--mp-green2:#0f8756;--mp-mint:#e8f8f0;
- --mp-ink:#18212b;--mp-muted:#71808d;--mp-bg:#f4f6f7;
- --mp-card:#fff;--mp-line:#e1e7eb;--mp-shadow:0 10px 30px rgba(24,40,50,.07)
+ --mp-green:#159c66;--mp-green-dark:#0d7f51;--mp-mint:#e7f7ef;
+ --mp-bg:#f5f7f7;--mp-ink:#17212b;--mp-muted:#6e7b86;
+ --mp-line:#e2e7ea;--mp-card:#fff
 }
-body{background:var(--mp-bg)!important;color:var(--mp-ink)!important}
-.mp15-glow{background:radial-gradient(circle at 15% 0,#e3f8ee 0,transparent 42%)}
-.mp15-modal{position:fixed;inset:0;background:rgba(14,24,31,.45);z-index:10001;display:flex;align-items:flex-end;justify-content:center}
-.mp15-picker{width:100%;background:#f6f8f8;border-radius:28px 28px 0 0;padding:20px;box-shadow:0 -15px 45px rgba(0,0,0,.2)}
-.mp15-picker h2{margin:0 0 5px;font-size:24px!important}.mp15-picker p{margin:0 0 16px;color:var(--mp-muted);font-size:14px}
-.mp15-days{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.mp15-day{background:#fff!important;border:1px solid var(--mp-line)!important;border-radius:17px!important;padding:14px!important;text-align:left;min-height:64px!important;box-shadow:0 4px 14px rgba(20,30,40,.04)}
-.mp15-day b{display:block}.mp15-day span{font-size:12px;color:var(--mp-muted)}
-.mp15-cancel{width:100%;margin-top:12px;background:#fff!important;border:1px solid var(--mp-line)!important}
-.mp15-hero{
- background:linear-gradient(145deg,#0f8f5c 0%,#1db878 70%,#7bd9ad 150%);
- border-radius:25px;padding:22px;color:#fff;position:relative;overflow:hidden;
- box-shadow:0 13px 32px rgba(15,143,92,.2)
+html,body{background:var(--mp-bg)!important;color:var(--mp-ink)!important}
+body{
+ font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif!important;
+ -webkit-font-smoothing:antialiased
 }
-.mp15-hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-55px;top:-65px;background:rgba(255,255,255,.13)}
-.mp15-hero h2{color:#fff!important;font-size:27px!important;margin:5px 0!important;position:relative;z-index:1}
-.mp15-hero p{position:relative;z-index:1;margin:0;opacity:.9}
-.mp15-kicker{font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
-.mp15-chip{display:inline-block;margin-top:14px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:700}
-.mp15-recipe{
- border:1px solid var(--mp-line);background:#fff;border-radius:22px;overflow:hidden;
- box-shadow:var(--mp-shadow);margin-bottom:14px
+button{
+ font-family:inherit!important;
+ border-radius:14px!important;
+ transition:transform .12s ease,box-shadow .12s ease!important
 }
-.mp15-food{height:155px;display:flex;align-items:center;justify-content:center;font-size:68px;background:linear-gradient(135deg,#edf9f3,#f9faf9)}
-.mp15-info{padding:15px}.mp15-name{font-size:19px;font-weight:800;letter-spacing:-.02em}.mp15-meta{font-size:12px;color:var(--mp-muted);margin-top:5px}
-.mp15-row{display:flex;gap:8px;margin-top:12px}.mp15-row button{flex:1;min-height:43px!important;font-weight:750}
-.mp15-primary{background:var(--mp-green)!important;color:#fff!important;border:0!important;box-shadow:0 5px 14px rgba(24,166,107,.2)}
-.mp15-secondary{background:#f7f9f9!important;border:1px solid var(--mp-line)!important}
-.mp15-section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px}
-.mp15-section-title h3{margin:0!important}.mp15-section-title span{font-size:12px;color:var(--mp-muted)}
-@media(min-width:700px){.mp15-picker{max-width:620px;border-radius:28px;margin-bottom:20px}.mp15-modal{align-items:center}.mp15-days{grid-template-columns:repeat(3,1fr)}}
+button:active{transform:scale(.97)}
+input,select,textarea{
+ font-family:inherit!important;border-radius:13px!important;
+ border:1px solid #dce2e6!important;background:#fff!important
+}
+.mp152-brand{
+ margin:8px 0 16px;padding:20px;border-radius:24px;
+ background:linear-gradient(140deg,#e5f7ee,#f7fbf9);
+ border:1px solid #cfeadd
+}
+.mp152-brand-kicker{
+ font-size:10px;font-weight:850;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--mp-green-dark)
+}
+.mp152-brand-title{
+ margin-top:4px;font-size:27px;font-weight:850;
+ letter-spacing:-.035em
+}
+.mp152-brand-sub{margin-top:4px;color:var(--mp-muted);font-size:14px}
+.card,.panel,.section,.recipe-card,.meal-card,.grocery-card,.item-card{
+ background:var(--mp-card)!important;
+ border:1px solid var(--mp-line)!important;
+ border-radius:20px!important;
+ box-shadow:0 7px 24px rgba(22,35,45,.055)!important
+}
+.primary,.btn-primary,button.primary{
+ background:var(--mp-green)!important;color:#fff!important;
+ border:0!important;box-shadow:0 5px 14px rgba(21,156,102,.2)!important
+}
+.badge,.pill,.tag{
+ border-radius:999px!important;background:var(--mp-mint)!important;
+ color:var(--mp-green-dark)!important
+}
+nav,.nav,.bottom-nav,.tabs{
+ background:rgba(255,255,255,.95)!important;
+ border-top:1px solid var(--mp-line)!important;
+ box-shadow:0 -8px 24px rgba(20,30,40,.05)!important;
+ backdrop-filter:blur(18px)
+}
+nav button.active,.nav button.active,.bottom-nav button.active,.tabs button.active{
+ color:var(--mp-green)!important;font-weight:750!important
+}
+</style>
 </head>
 <body>
 <header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
@@ -745,107 +767,4 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
  },true);
 })();
 </script>
-
-
-
-<script id="mealpilot-v151-safe">
-(function(){
-  "use strict";
-  try {
-    var DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-
-    function allRecipes(){
-      try {
-        var r=window.recipes||window.RECIPES||window.recipeData||[];
-        return Array.isArray(r)?r:[];
-      } catch(e){ return []; }
-    }
-
-    function findRecipeByTitle(title){
-      var a=allRecipes();
-      for(var i=0;i<a.length;i++){
-        var n=a[i] && (a[i].name||a[i].title);
-        if(n===title) return a[i];
-      }
-      return null;
-    }
-
-    function detectPlan(){
-      var keys=["mealpilot_plan","plan","weeklyPlan"];
-      for(var i=0;i<keys.length;i++){
-        try{
-          var raw=localStorage.getItem(keys[i]);
-          if(!raw) continue;
-          var value=JSON.parse(raw);
-          if(value && (Array.isArray(value)||typeof value==="object"))
-            return {key:keys[i],value:value};
-        }catch(e){}
-      }
-      return null;
-    }
-
-    function addToDay(recipeId,dayIndex){
-      var found=detectPlan(), day=DAYS[dayIndex];
-      if(found){
-        if(Array.isArray(found.value)) found.value[dayIndex]=recipeId;
-        else found.value[day]=recipeId;
-        try{localStorage.setItem(found.key,JSON.stringify(found.value));}catch(e){}
-      }
-      try{
-        localStorage.setItem("mealpilot_selected_day_v151",day);
-        localStorage.setItem("mealpilot_selected_recipe_v151",String(recipeId));
-      }catch(e){}
-      try{ if(typeof window.render==="function") window.render(); }catch(e){}
-    }
-
-    function picker(recipe){
-      if(!recipe) return;
-      var id=recipe.id||recipe.name||recipe.title;
-      var modal=document.createElement("div");
-      modal.className="mp15-modal";
-      var buttons="";
-      for(var i=0;i<DAYS.length;i++){
-        buttons+='<button class="mp15-day" data-day="'+i+'"><b>'+DAYS[i]+'</b><span>Add meal here</span></button>';
-      }
-      modal.innerHTML='<div class="mp15-picker"><h2>Add to your week</h2><p>Choose a day for '+String(recipe.name||recipe.title||"this recipe")+'.</p><div class="mp15-days">'+buttons+'</div><button class="mp15-cancel">Cancel</button></div>';
-      document.body.appendChild(modal);
-      modal.querySelector(".mp15-cancel").onclick=function(){modal.remove();};
-      var dayButtons=modal.querySelectorAll(".mp15-day");
-      for(var j=0;j<dayButtons.length;j++){
-        dayButtons[j].onclick=function(){
-          addToDay(id,Number(this.getAttribute("data-day")));
-          modal.remove();
-        };
-      }
-    }
-
-    document.addEventListener("click",function(e){
-      try{
-        var btn=e.target && e.target.closest ? e.target.closest("#mp14-add") : null;
-        if(!btn) return;
-        var overlay=document.getElementById("mp14-overlay");
-        var title=overlay && overlay.querySelector(".mp14-title");
-        var recipe=findRecipeByTitle(title ? title.textContent : "");
-        if(!recipe) return; // Let the original handler run if we cannot safely identify it.
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        picker(recipe);
-      }catch(err){}
-    },true);
-
-    setTimeout(function(){
-      try{
-        var d=document.getElementById("mp13-discover");
-        if(d){
-          var hero=d.querySelector(".mp13-hero");
-          if(hero) hero.classList.add("mp15-hero");
-        }
-      }catch(e){}
-    },600);
-  } catch(e) {
-    // Never allow enhancement code to break the base MealPilot app.
-  }
-})();
-</script>
-
 </body></html>
