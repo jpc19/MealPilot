@@ -599,27 +599,33 @@ function pantryMatches(k){
 function pantryDeduct(k,values){
  let meta=groceryMeta[k], entries=pantryMatches(k), parsed=values.map(parseAmount);
  if(!entries.length || !meta || !parsed.every(x=>x.n!==null)) return {values,have:null,buyValues:values};
- let requiredUnit=parsed[0].unit.toLowerCase();
- if(parsed.some(x=>x.unit.toLowerCase()!==requiredUnit)) return {values,have:null,buyValues:values};
+ // Recipe ingredients such as "avocado: 1" are count-based even though the
+ // recipe text has no explicit unit. Treat blank units as "each" for count items.
+ let requiredUnit=(parsed[0].unit||'').toLowerCase();
+ if(meta.kind==="count" && !requiredUnit) requiredUnit='each';
+ if(parsed.some(x=>((x.unit||'').toLowerCase()|| (meta.kind==="count"?'each':''))!==requiredUnit)) return {values,have:null,buyValues:values};
  let required=parsed.reduce((a,x)=>a+x.n,0);
  let available=0, compatible=false;
  for(const p of entries){
    if(p.qty===null||p.qty===undefined||p.qty==='') continue;
    let pn=parseFloat(p.qty); if(!Number.isFinite(pn)) continue;
-   let pu=String(p.unit||'').toLowerCase();
+   let pu=String(p.unit||'').toLowerCase().trim();
+   if(meta.kind==="count" && !pu) pu='each';
    if(pu===requiredUnit){available+=pn;compatible=true;continue}
    let converted=null;
    if((requiredUnit==='oz'||requiredUnit==='lb') && (pu==='oz'||pu==='lb')) converted=toOz(pn,pu);
    if((requiredUnit==='tbsp'||requiredUnit==='tsp'||requiredUnit==='cup') && pu===requiredUnit) converted=pn;
    if(converted!==null){
-     if(requiredUnit==='lb') available+=converted/16; else if(requiredUnit==='oz') available+=converted; else available+=converted;
+     if(requiredUnit==='lb') available+=converted/16; else available+=converted;
      compatible=true;
    }
  }
  if(!compatible) return {values,have:null,buyValues:values};
+ let used=Math.min(available,required);
  let remaining=Math.max(0,required-available);
- let buyValues=remaining===0?[]:[`${Math.round(remaining*100)/100} ${parsed[0].unit}`];
- return {values,have:`${Math.round(Math.min(available,required)*100)/100} ${parsed[0].unit}`,buyValues};
+ let haveLabel=`${Math.round(used*100)/100} ${requiredUnit}`;
+ let buyValues=remaining===0?[]:[`${Math.round(remaining*100)/100} ${requiredUnit}`];
+ return {values,have:haveLabel,buyValues};
 }
 function groceryData(){
  let groups={};
@@ -638,7 +644,7 @@ function substitutionMenu(k){let opts=substitutions[k]||[];if(!opts.length){aler
 function shareGroceryList(){let groups=groceryData(),lines=["MealPilot Grocery List",""];for(const [dept,g] of Object.entries(groups)){lines.push(dept);for(const [k,x] of Object.entries(g))lines.push(`• ${displayName(k)} — Need ${x.amount.needed}; Buy ${x.amount.buy}`)}let custom=state.customGroceries||[];if(custom.length){lines.push("Custom Items");custom.forEach(x=>lines.push(`• ${x}`))}let txt=lines.join("\n");if(navigator.share){navigator.share({title:"MealPilot Grocery List",text:txt}).catch(()=>{})}else{navigator.clipboard?.writeText(txt);alert("Grocery list copied to your clipboard.")}}
 function shopView(){
  let groups=groceryData(),custom=state.customGroceries||[],depts=Object.keys(groups),tot=groceryTotals(groups),checked=checkedItems(),prog=groceryProgress(groups);
- let content=depts.map(dept=>{let deptTotal=Object.values(groups[dept]).reduce((a,x)=>a+(x.amount.cost||0),0);return `<div class="card"><div class="row"><h3 style="margin:0">${dept}</h3><small class="meta">${Object.keys(groups[dept]).length} items · ~$${deptTotal.toFixed(2)}</small></div>${Object.entries(groups[dept]).map(([k,x])=>{let id=`${dept}:${k}`,is=checked.includes(id);return `<div class="listitem ${is?'done':''}"><input type="checkbox" ${is?'checked':''} onchange="setChecked('${id}',this.checked);this.parentElement.classList.toggle('done',this.checked);show('shop')"><span style="flex:1"><b>${displayName(k)}</b><br><small>Need: ${x.amount.needed}</small><br><strong>Buy: ${x.amount.buy}</strong><br><small style="color:#6b7280">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]} · Est. $${(x.amount.cost||0).toFixed(2)}</small></span><button class="secondary" onclick="substitutionMenu('${k}')">Swap</button></div>`}).join("")}</div>`}).join("");
+ let content=depts.map(dept=>{let deptTotal=Object.values(groups[dept]).reduce((a,x)=>a+(x.amount.cost||0),0);return `<div class="card"><div class="row"><h3 style="margin:0">${dept}</h3><small class="meta">${Object.keys(groups[dept]).length} items · ~$${deptTotal.toFixed(2)}</small></div>${Object.entries(groups[dept]).map(([k,x])=>{let id=`${dept}:${k}`,is=checked.includes(id);return `<div class="listitem ${is?'done':''}"><input type="checkbox" ${is?'checked':''} onchange="setChecked('${id}',this.checked);this.parentElement.classList.toggle('done',this.checked);show('shop')"><span style="flex:1"><b>${displayName(k)}</b><br><small>Need: ${x.amount.needed}</small>${x.amount.have?`<br><small>Have: ${x.amount.have}</small>`:""}<br><strong>Buy: ${x.amount.buy}</strong><br><small style="color:#6b7280">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]} · Est. $${(x.amount.cost||0).toFixed(2)}</small></span><button class="secondary" onclick="substitutionMenu('${k}')">Swap</button></div>`}).join("")}</div>`}).join("");
  let customHtml=custom.length?`<div class="card"><h3 style="margin-top:0">Custom Items</h3>${custom.map((x,i)=>{let id=`custom:${i}`,is=checked.includes(id);return `<div class="listitem ${is?'done':''}"><input type="checkbox" ${is?'checked':''} onchange="setChecked('${id}',this.checked);this.parentElement.classList.toggle('done',this.checked);show('shop')"><span style="flex:1">${x}</span><button class="secondary" onclick="state.customGroceries.splice(${i},1);save();show('shop')">Remove</button></div>`}).join("")}</div>`:"";
  let progress=prog.total?`<div class="card"><div class="row"><div><b>Shopping progress</b><div class="meta">${prog.done} of ${prog.total} items checked</div></div><strong>${prog.pct}%</strong></div><div style="height:8px;background:#e8eee9;border-radius:999px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${prog.pct}%;background:#16875a;border-radius:999px"></div></div></div>`:"";
  return `<h2>Grocery List</h2><div class="notice"><b>Package-smart shopping</b><br>MealPilot combines ingredients across your meals, accounts for pantry items, and estimates the number of packages to buy. Prices are illustrative estimates, not live Target prices.</div>${progress}<div class="card"><div class="row"><div><b>${Object.values(groups).reduce((n,g)=>n+Object.keys(g).length,0)} ingredients</b><div class="meta">${state.settings.servings} servings · pantry-aware</div></div><div style="text-align:right"><b>~$${tot.total.toFixed(2)}</b><div class="meta">${tot.count} packages</div></div></div><br><div class="actions"><button onclick="addCustomGrocery()">+ Add Item</button><button class="secondary" onclick="shareGroceryList()">Share / Copy</button></div></div>${content||`<div class="card empty">Generate a weekly plan first.</div>`}${customHtml}<div class="card"><div class="row"><div><b>Target shopping</b><div class="meta">Choose how you want Target to fulfill the basket.</div></div><select onchange="localStorage.setItem('mealpilot_target_fulfillment',this.value)" style="max-width:150px"><option ${((localStorage.getItem("mealpilot_target_fulfillment")||"Pickup")==="Pickup")?"selected":""}>Pickup</option><option ${localStorage.getItem("mealpilot_target_fulfillment")==="Drive Up"?"selected":""}>Drive Up</option><option ${localStorage.getItem("mealpilot_target_fulfillment")==="Shipping"?"selected":""}>Shipping</option></select></div><br><div class="actions"><button onclick="openTargetHandoff()">Shop at Target</button><button class="secondary" onclick="copyTargetRequest()">Copy Target Request</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div><div class="meta" style="margin-top:10px">Uses the Target shopping experience through ChatGPT. Your Target password is never stored by MealPilot.</div></div>`;
