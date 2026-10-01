@@ -24,7 +24,7 @@ dialog{border:0;border-radius:20px;width:min(92%,560px);padding:0;box-shadow:0 2
 select,input[type=number],input[type=text]{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:white}
 label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 .notice{background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:12px;color:#166534;font-size:13px}
-.empty{color:var(--muted);text-align:center;padding:30px 10px}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}.done{opacity:.55}.done b,.done strong{text-decoration:line-through}
 </style>
 </head>
 <body>
@@ -81,8 +81,8 @@ const recipes=[
 {id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],serves:2,ingredients:{greek_yogurt:"2 cups",berries:"1 pint",granola:"1/2 bag",honey:"1 tbsp",banana:"1"}},
 {id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],serves:2,ingredients:{eggs:"4",black_beans:"1/2 can",tortillas:"4",cheddar:"2 oz",potatoes:"8 oz",salsa:"1/2 jar"}}
 ];
-let state=JSON.parse(localStorage.getItem("mealpilot6")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
-function save(){state.customGroceries??=[];localStorage.setItem("mealpilot6",JSON.stringify(state))}
+let state=JSON.parse(localStorage.getItem("mealpilot7")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
+function save(){state.customGroceries??=[];localStorage.setItem("mealpilot7",JSON.stringify(state))}
 function filtered(){
  let s=state.settings, dislikes=(s.dislikes||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), allergies=(s.allergies||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), cuisines=(s.cuisines||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
  return recipes.filter(r=>{
@@ -133,85 +133,156 @@ function renderRecipes(){
 }
 
 const deptMap={
- chicken:"Meat & Seafood",ground_turkey:"Meat & Seafood",ground_beef:"Meat & Seafood",steak:"Meat & Seafood",salmon:"Meat & Seafood",shrimp:"Meat & Seafood",cod:"Meat & Seafood",eggs:"Dairy & Eggs",
- greek_yogurt:"Dairy & Eggs",yogurt:"Dairy & Eggs",cream:"Dairy & Eggs",parmesan:"Dairy & Eggs",mozzarella:"Dairy & Eggs",cheddar:"Dairy & Eggs",feta:"Dairy & Eggs",ricotta:"Dairy & Eggs",milk:"Dairy & Eggs",
- broccoli:"Produce",bell_pepper:"Produce",onion:"Produce",lime:"Produce",lemon:"Produce",spinach:"Produce",cucumber:"Produce",tomato:"Produce",carrots:"Produce",green_beans:"Produce",sweet_potatoes:"Produce",avocado:"Produce",lettuce:"Produce",romaine:"Produce",cabbage:"Produce",basil:"Produce",celery:"Produce",ginger:"Produce",green_onion:"Produce",bananas:"Produce",berries:"Produce",peas:"Frozen",corn:"Canned & Dry Goods",
- black_beans:"Canned & Dry Goods",kidney_beans:"Canned & Dry Goods",chickpeas:"Canned & Dry Goods",lentils:"Canned & Dry Goods",tomatoes:"Canned & Dry Goods",marinara:"Canned & Dry Goods",salsa:"Canned & Dry Goods",salsa_verde:"Canned & Dry Goods",enchilada_sauce:"Canned & Dry Goods",coconut_milk:"Canned & Dry Goods",
- rice:"Pantry",pasta:"Pantry",noodles:"Pantry",oats:"Pantry",bread:"Bakery",tortillas:"Bakery",pitas:"Bakery",pita:"Bakery",hummus:"Deli",granola:"Pantry",chia_seeds:"Pantry",peanut_butter:"Pantry",cinnamon:"Pantry",cumin:"Pantry",curry_powder:"Pantry",chili_powder:"Pantry",fajita_seasoning:"Pantry",everything_bagel_seasoning:"Pantry",
- soy_sauce:"Condiments",honey:"Condiments",olive_oil:"Condiments",balsamic:"Condiments",caesar_dressing:"Condiments",chicken_broth:"Canned & Dry Goods",sun_dried_tomatoes:"Canned & Dry Goods"
+ chicken:"Meat & Seafood",ground_turkey:"Meat & Seafood",ground_beef:"Meat & Seafood",steak:"Meat & Seafood",salmon:"Meat & Seafood",shrimp:"Meat & Seafood",cod:"Meat & Seafood",tofu:"Meat & Seafood",
+ eggs:"Dairy & Eggs",greek_yogurt:"Dairy & Eggs",yogurt:"Dairy & Eggs",cream:"Dairy & Eggs",parmesan:"Dairy & Eggs",mozzarella:"Dairy & Eggs",cheddar:"Dairy & Eggs",feta:"Dairy & Eggs",ricotta:"Dairy & Eggs",milk:"Dairy & Eggs",
+ broccoli:"Produce",bell_pepper:"Produce",onion:"Produce",lime:"Produce",lemon:"Produce",spinach:"Produce",cucumber:"Produce",tomato:"Produce",carrots:"Produce",green_beans:"Produce",sweet_potatoes:"Produce",potatoes:"Produce",avocado:"Produce",lettuce:"Produce",romaine:"Produce",cabbage:"Produce",basil:"Produce",celery:"Produce",ginger:"Produce",green_onion:"Produce",bananas:"Produce",banana:"Produce",berries:"Produce",pickles:"Condiments",
+ peas:"Frozen",corn:"Canned & Dry Goods",black_beans:"Canned & Dry Goods",kidney_beans:"Canned & Dry Goods",chickpeas:"Canned & Dry Goods",lentils:"Canned & Dry Goods",tomatoes:"Canned & Dry Goods",marinara:"Canned & Dry Goods",salsa:"Canned & Dry Goods",salsa_verde:"Canned & Dry Goods",enchilada_sauce:"Canned & Dry Goods",coconut_milk:"Canned & Dry Goods",chicken_broth:"Canned & Dry Goods",sun_dried_tomatoes:"Canned & Dry Goods",
+ rice:"Pantry",pasta:"Pantry",noodles:"Pantry",oats:"Pantry",granola:"Pantry",chia_seeds:"Pantry",peanut_butter:"Pantry",cinnamon:"Pantry",cumin:"Pantry",curry_powder:"Pantry",chili_powder:"Pantry",fajita_seasoning:"Pantry",everything_bagel_seasoning:"Pantry",
+ bread:"Bakery",tortillas:"Bakery",pitas:"Bakery",pita:"Bakery",hummus:"Deli",
+ soy_sauce:"Condiments",honey:"Condiments",olive_oil:"Condiments",balsamic:"Condiments",caesar_dressing:"Condiments",garlic:"Produce"
 };
-function qtyScale(v,servings){
- let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);if(!m)return v;
- let n=parseFloat(m[1])*(servings/2),unit=m[2];
- let rounded=Math.round(n*4)/4;
- return (Number.isInteger(rounded)?String(rounded):String(rounded))+" "+unit;
-}
 
-const purchaseRules={
- chicken:{unit:"lb",pack:1},ground_turkey:{unit:"lb",pack:1},ground_beef:{unit:"lb",pack:1},steak:{unit:"lb",pack:1},salmon:{unit:"lb",pack:1},shrimp:{unit:"lb",pack:1},cod:{unit:"lb",pack:1},
- broccoli:{unit:"head",pack:1},bell_pepper:{unit:"each",pack:1},onion:{unit:"each",pack:1},lime:{unit:"each",pack:1},lemon:{unit:"each",pack:1},spinach:{unit:"oz",pack:5},cucumber:{unit:"each",pack:1},tomato:{unit:"each",pack:1},carrots:{unit:"each",pack:1},green_beans:{unit:"lb",pack:1},sweet_potatoes:{unit:"each",pack:1},avocado:{unit:"each",pack:1},lettuce:{unit:"head",pack:1},romaine:{unit:"head",pack:1},cabbage:{unit:"head",pack:1},basil:{unit:"bunch",pack:1},celery:{unit:"bunch",pack:1},ginger:{unit:"piece",pack:1},green_onion:{unit:"bunch",pack:1},bananas:{unit:"each",pack:1},berries:{unit:"pint",pack:1},
- eggs:{unit:"each",pack:12},greek_yogurt:{unit:"container",pack:1},cream:{unit:"cup",pack:1},parmesan:{unit:"cup",pack:1},mozzarella:{unit:"lb",pack:1},cheddar:{unit:"lb",pack:1},feta:{unit:"cup",pack:1},ricotta:{unit:"tub",pack:1},milk:{unit:"carton",pack:1},
- rice:{unit:"cup",pack:1},pasta:{unit:"lb",pack:1},noodles:{unit:"lb",pack:1},oats:{unit:"container",pack:1},bread:{unit:"loaf",pack:1},tortillas:{unit:"pack",pack:1},pitas:{unit:"pack",pack:1},pita:{unit:"pack",pack:1},hummus:{unit:"tub",pack:1},granola:{unit:"bag",pack:1},chia_seeds:{unit:"bag",pack:1},peanut_butter:{unit:"jar",pack:1},
- black_beans:{unit:"can",pack:1},kidney_beans:{unit:"can",pack:1},chickpeas:{unit:"can",pack:1},lentils:{unit:"lb",pack:1},tomatoes:{unit:"can",pack:1},marinara:{unit:"jar",pack:1},salsa:{unit:"jar",pack:1},salsa_verde:{unit:"jar",pack:1},enchilada_sauce:{unit:"jar",pack:1},coconut_milk:{unit:"can",pack:1},corn:{unit:"can",pack:1},peas:{unit:"bag",pack:1},
- soy_sauce:{unit:"bottle",pack:1},honey:{unit:"bottle",pack:1},olive_oil:{unit:"bottle",pack:1},balsamic:{unit:"bottle",pack:1},caesar_dressing:{unit:"bottle",pack:1},chicken_broth:{unit:"carton",pack:1},
- garlic:{unit:"head",pack:1},fajita_seasoning:{unit:"packet",pack:1},curry_powder:{unit:"container",pack:1},chili_powder:{unit:"container",pack:1},cumin:{unit:"container",pack:1},cinnamon:{unit:"container",pack:1},everything_bagel_seasoning:{unit:"container",pack:1}
+// Package-aware grocery metadata. Prices are illustrative estimates, not live retailer prices.
+const groceryMeta={
+ chicken:{name:"Boneless skinless chicken breast",dept:"Meat & Seafood",kind:"weight",pack:1.5,packUnit:"lb",label:"1.5 lb package",price:8.49},
+ ground_turkey:{name:"93% lean ground turkey",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb package",price:6.49},
+ ground_beef:{name:"Ground beef",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb package",price:6.99},
+ steak:{name:"Beef steak",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb package",price:11.99},
+ salmon:{name:"Salmon fillets",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb package",price:11.99},
+ shrimp:{name:"Raw peeled shrimp",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb bag",price:9.99},
+ cod:{name:"Cod fillets",dept:"Meat & Seafood",kind:"weight",pack:1,packUnit:"lb",label:"1 lb package",price:9.99},
+ tofu:{name:"Extra-firm tofu",dept:"Meat & Seafood",kind:"weight",pack:14,packUnit:"oz",label:"14 oz package",price:2.49},
+ eggs:{name:"Large eggs",dept:"Dairy & Eggs",kind:"count",pack:12,packUnit:"each",label:"12-count carton",price:3.49},
+ greek_yogurt:{name:"Plain Greek yogurt",dept:"Dairy & Eggs",kind:"volume",pack:32,packUnit:"oz",label:"32 oz tub",price:4.99},
+ cream:{name:"Heavy cream",dept:"Dairy & Eggs",kind:"volume",pack:16,packUnit:"oz",label:"16 oz carton",price:4.49},
+ parmesan:{name:"Grated Parmesan cheese",dept:"Dairy & Eggs",kind:"volume",pack:8,packUnit:"oz",label:"8 oz container",price:4.99},
+ mozzarella:{name:"Mozzarella cheese",dept:"Dairy & Eggs",kind:"weight",pack:8,packUnit:"oz",label:"8 oz package",price:3.99},
+ cheddar:{name:"Cheddar cheese",dept:"Dairy & Eggs",kind:"weight",pack:8,packUnit:"oz",label:"8 oz package",price:3.49},
+ feta:{name:"Feta cheese",dept:"Dairy & Eggs",kind:"volume",pack:8,packUnit:"oz",label:"8 oz container",price:4.49},
+ ricotta:{name:"Ricotta cheese",dept:"Dairy & Eggs",kind:"weight",pack:15,packUnit:"oz",label:"15 oz tub",price:3.49},
+ milk:{name:"Milk",dept:"Dairy & Eggs",kind:"volume",pack:64,packUnit:"oz",label:"half-gallon",price:2.99},
+ broccoli:{name:"Broccoli crowns",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 crown",price:2.49},
+ bell_pepper:{name:"Bell peppers",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 pepper",price:1.00},
+ onion:{name:"Yellow onion",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 onion",price:0.90},
+ lime:{name:"Limes",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 lime",price:0.50},
+ lemon:{name:"Lemons",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 lemon",price:0.70},
+ spinach:{name:"Baby spinach",dept:"Produce",kind:"weight",pack:5,packUnit:"oz",label:"5 oz bag",price:2.49},
+ cucumber:{name:"Cucumber",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 cucumber",price:0.89},
+ tomato:{name:"Roma tomatoes",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 tomato",price:0.60},
+ carrots:{name:"Carrots",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 carrot",price:0.25},
+ green_beans:{name:"Fresh green beans",dept:"Produce",kind:"weight",pack:1,packUnit:"lb",label:"1 lb bag",price:2.99},
+ sweet_potatoes:{name:"Sweet potatoes",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 potato",price:1.00},
+ potatoes:{name:"Russet potatoes",dept:"Produce",kind:"weight",pack:3,packUnit:"lb",label:"3 lb bag",price:3.49},
+ avocado:{name:"Avocados",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 avocado",price:1.00},
+ lettuce:{name:"Green leaf lettuce",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 head",price:2.49},
+ romaine:{name:"Romaine lettuce",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 head",price:2.49},
+ cabbage:{name:"Green cabbage",dept:"Produce",kind:"weight",pack:1,packUnit:"lb",label:"1 lb head",price:1.79},
+ basil:{name:"Fresh basil",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:2.49},
+ celery:{name:"Celery",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:2.49},
+ ginger:{name:"Fresh ginger",dept:"Produce",kind:"count",pack:1,packUnit:"piece",label:"1 piece",price:1.49},
+ green_onion:{name:"Green onions",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:1.49},
+ bananas:{name:"Bananas",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 banana",price:0.30},
+ banana:{name:"Bananas",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 banana",price:0.30},
+ berries:{name:"Fresh berries",dept:"Produce",kind:"volume",pack:16,packUnit:"oz",label:"1 pint",price:3.99},
+ garlic:{name:"Garlic",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 head",price:0.70},
+ eggs:{name:"Large eggs",dept:"Dairy & Eggs",kind:"count",pack:12,packUnit:"each",label:"12-count carton",price:3.49},
+ black_beans:{name:"Black beans",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
+ kidney_beans:{name:"Kidney beans",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
+ chickpeas:{name:"Chickpeas",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
+ lentils:{name:"Dry lentils",dept:"Canned & Dry Goods",kind:"weight",pack:1,packUnit:"lb",label:"1 lb bag",price:1.99},
+ tomatoes:{name:"Diced tomatoes",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"14.5 oz can",price:1.19},
+ marinara:{name:"Marinara sauce",dept:"Canned & Dry Goods",kind:"jar",pack:24,packUnit:"oz",label:"24 oz jar",price:2.99},
+ salsa:{name:"Salsa",dept:"Canned & Dry Goods",kind:"jar",pack:16,packUnit:"oz",label:"16 oz jar",price:2.49},
+ salsa_verde:{name:"Salsa verde",dept:"Canned & Dry Goods",kind:"jar",pack:16,packUnit:"oz",label:"16 oz jar",price:2.99},
+ enchilada_sauce:{name:"Enchilada sauce",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:1.69},
+ coconut_milk:{name:"Coconut milk",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"13.5 oz can",price:2.49},
+ corn:{name:"Whole kernel corn",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
+ chicken_broth:{name:"Chicken broth",dept:"Canned & Dry Goods",kind:"carton",pack:32,packUnit:"oz",label:"32 oz carton",price:2.49},
+ peas:{name:"Frozen peas",dept:"Frozen",kind:"weight",pack:12,packUnit:"oz",label:"12 oz bag",price:1.49},
+ rice:{name:"Long-grain white rice",dept:"Pantry",kind:"weight",pack:32,packUnit:"oz",label:"2 lb bag",price:2.99},
+ pasta:{name:"Pasta",dept:"Pantry",kind:"weight",pack:16,packUnit:"oz",label:"16 oz box",price:1.49},
+ noodles:{name:"Asian-style noodles",dept:"Pantry",kind:"weight",pack:16,packUnit:"oz",label:"16 oz package",price:2.49},
+ oats:{name:"Old-fashioned oats",dept:"Pantry",kind:"weight",pack:18,packUnit:"oz",label:"18 oz container",price:2.49},
+ bread:{name:"Sandwich bread",dept:"Bakery",kind:"count",pack:1,packUnit:"loaf",label:"1 loaf",price:2.99},
+ tortillas:{name:"Flour tortillas",dept:"Bakery",kind:"count",pack:8,packUnit:"each",label:"8-count pack",price:2.49},
+ pitas:{name:"Pita bread",dept:"Bakery",kind:"count",pack:6,packUnit:"each",label:"6-count pack",price:3.49},
+ pita:{name:"Pita bread",dept:"Bakery",kind:"count",pack:6,packUnit:"each",label:"6-count pack",price:3.49},
+ hummus:{name:"Hummus",dept:"Deli",kind:"weight",pack:10,packUnit:"oz",label:"10 oz tub",price:3.49},
+ granola:{name:"Granola",dept:"Pantry",kind:"weight",pack:12,packUnit:"oz",label:"12 oz bag",price:4.49},
+ chia_seeds:{name:"Chia seeds",dept:"Pantry",kind:"weight",pack:12,packUnit:"oz",label:"12 oz bag",price:6.49},
+ peanut_butter:{name:"Peanut butter",dept:"Pantry",kind:"weight",pack:16,packUnit:"oz",label:"16 oz jar",price:2.99},
+ soy_sauce:{name:"Soy sauce",dept:"Condiments",kind:"volume",pack:15,packUnit:"oz",label:"15 oz bottle",price:2.49},
+ honey:{name:"Honey",dept:"Condiments",kind:"volume",pack:12,packUnit:"oz",label:"12 oz bottle",price:4.49},
+ olive_oil:{name:"Olive oil",dept:"Condiments",kind:"volume",pack:17,packUnit:"oz",label:"17 oz bottle",price:7.99},
+ balsamic:{name:"Balsamic vinegar",dept:"Condiments",kind:"volume",pack:16,packUnit:"oz",label:"16 oz bottle",price:3.99},
+ caesar_dressing:{name:"Caesar dressing",dept:"Condiments",kind:"volume",pack:16,packUnit:"oz",label:"16 oz bottle",price:3.99},
+ pickles:{name:"Dill pickles",dept:"Condiments",kind:"jar",pack:24,packUnit:"oz",label:"24 oz jar",price:2.99},
+ fajita_seasoning:{name:"Fajita seasoning",dept:"Pantry",kind:"packet",pack:1,packUnit:"packet",label:"1 packet",price:0.99},
+ curry_powder:{name:"Curry powder",dept:"Pantry",kind:"spice",pack:1,packUnit:"container",label:"1 spice container",price:2.49},
+ chili_powder:{name:"Chili powder",dept:"Pantry",kind:"spice",pack:1,packUnit:"container",label:"1 spice container",price:2.49},
+ cumin:{name:"Ground cumin",dept:"Pantry",kind:"spice",pack:1,packUnit:"container",label:"1 spice container",price:2.49},
+ cinnamon:{name:"Ground cinnamon",dept:"Pantry",kind:"spice",pack:1,packUnit:"container",label:"1 spice container",price:2.49},
+ everything_bagel_seasoning:{name:"Everything bagel seasoning",dept:"Pantry",kind:"spice",pack:1,packUnit:"container",label:"1 seasoning container",price:3.49}
 };
-function parseAmount(v){
- let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
- return m?{n:parseFloat(m[1]),unit:m[2].trim()}:{n:null,unit:v};
-}
-function purchaseAmount(key, recipeValues){
- let parsed=recipeValues.map(parseAmount);
- if(parsed.some(x=>x.n===null))return {needed:recipeValues.join(" + "),buy:recipeValues.join(" + ")};
- let total=parsed.reduce((a,x)=>a+x.n,0), rule=purchaseRules[key], u=parsed[0].unit;
- if(["black_beans","kidney_beans","chickpeas","tomatoes","corn","coconut_milk"].includes(key)){
-  let cans=Math.ceil(total);return {needed:`${total} ${u}`,buy:`${cans} can${cans===1?"":"s"}`}
+const substitutions={
+ chicken:["ground_turkey","tofu"],ground_turkey:["chicken","ground_beef"],ground_beef:["ground_turkey"],steak:["chicken","ground_beef"],salmon:["cod","shrimp"],cod:["salmon","shrimp"],shrimp:["cod","tofu"],
+ greek_yogurt:["yogurt","sour_cream"],cream:["milk","greek_yogurt"],parmesan:["feta","mozzarella"],mozzarella:["cheddar"],cheddar:["mozzarella"],feta:["cheddar"],rice:["quinoa","couscous"],pasta:["noodles"],spinach:["kale"],broccoli:["green_beans","cauliflower"],bell_pepper:["onion"],tortillas:["pitas"],pitas:["tortillas"],black_beans:["kidney_beans","chickpeas"],chickpeas:["black_beans","lentils"]
+};
+const substituteLabels={
+ ground_turkey:"Ground turkey",chicken:"Chicken breast",tofu:"Extra-firm tofu",ground_beef:"Ground beef",salmon:"Salmon",cod:"Cod",shrimp:"Shrimp",greek_yogurt:"Plain Greek yogurt",yogurt:"Plain yogurt",sour_cream:"Sour cream",cream:"Heavy cream",milk:"Milk",parmesan:"Parmesan",feta:"Feta",mozzarella:"Mozzarella",cheddar:"Cheddar",rice:"Rice",quinoa:"Quinoa",couscous:"Couscous",pasta:"Pasta",noodles:"Noodles",spinach:"Spinach",kale:"Kale",broccoli:"Broccoli",green_beans:"Green beans",cauliflower:"Cauliflower",bell_pepper:"Bell pepper",onion:"Onion",tortillas:"Tortillas",pitas:"Pitas",black_beans:"Black beans",kidney_beans:"Kidney beans",chickpeas:"Chickpeas",lentils:"Lentils"
+};
+function canonicalKey(k){return state.substitutions?.[k]||k}
+function displayName(k){return groceryMeta[k]?.name||substituteLabels[k]||k.replaceAll("_"," ")}
+function parseAmount(v){let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);return m?{n:parseFloat(m[1]),unit:m[2].trim()}:{n:null,unit:v}}
+function qtyScale(v,servings){let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);if(!m)return v;let n=parseFloat(m[1])*(servings/2),unit=m[2];let rounded=Math.round(n*4)/4;return `${Number.isInteger(rounded)?rounded:rounded} ${unit}`}
+function toOz(n,unit){let u=unit.toLowerCase();if(u==="lb"||u==="lbs"||u==="pound"||u==="pounds")return n*16;if(u==="oz"||u==="ounce"||u==="ounces")return n;return null}
+function purchaseAmount(key,values){
+ let meta=groceryMeta[key], parsed=values.map(parseAmount), total=parsed.every(x=>x.n!==null)?parsed.reduce((a,x)=>a+x.n,0):null;
+ if(!meta||total===null)return {needed:values.join(" + "),buy:"See package / store size",cost:0,packages:0};
+ let unit=parsed[0].unit.toLowerCase(), packages=1, needed=values.join(" + "), buy=meta.label;
+ if(meta.kind==="weight"){
+  let oz=toOz(total,unit), packOz=toOz(meta.pack,meta.packUnit);
+  if(oz!==null&&packOz){packages=Math.max(1,Math.ceil(oz/packOz));buy=`${packages} × ${meta.label}`;needed=`${Math.round(oz*100)/100} oz`}
+  else {packages=Math.max(1,Math.ceil(total/meta.pack));buy=`${packages} × ${meta.label}`}
+ } else if(meta.kind==="count"){
+  packages=Math.max(1,Math.ceil(total/meta.pack));buy=meta.pack===1?`${packages} × ${meta.label}`:`${packages} × ${meta.label}`;needed=`${total} ${unit}`;
+ } else if(meta.kind==="can"||meta.kind==="packet"||meta.kind==="spice"){
+  packages=Math.max(1,Math.ceil(total));buy=`${packages} × ${meta.label}`;
+ } else if(meta.kind==="volume"||meta.kind==="jar"||meta.kind==="carton"){
+  let vol=toOz(total,unit), packVol=toOz(meta.pack,meta.packUnit);
+  if(vol!==null&&packVol)packages=Math.max(1,Math.ceil(vol/packVol));
+  else packages=1;
+  buy=`${packages} × ${meta.label}`;
  }
- if(key==="garlic"&&u.includes("clove")){let heads=Math.ceil(total/10);return {needed:`${total} cloves`,buy:`${heads} head${heads===1?"":"s"}`}}
- if(!rule)return {needed:`${total} ${u}`,buy:`${total} ${u}`};
- if(rule.unit==="lb"&&u==="oz"){let lbs=total/16;return {needed:`${total} oz`,buy:`${Math.ceil(lbs*4)/4} lb`}}
- if(rule.unit==="oz"&&u==="oz")return {needed:`${total} oz`,buy:`${Math.ceil(total)} oz`};
- if(rule.unit==="each"||rule.unit==="head"||rule.unit==="bunch")return {needed:`${total} ${u}`,buy:`${Math.ceil(total)} ${rule.unit}${Math.ceil(total)===1?"":"s"}`};
- return {needed:`${total} ${u}`,buy:`${Math.ceil(total)} ${rule.unit}${Math.ceil(total)===1?"":"s"}`};
+ return {needed,buy,cost:packages*meta.price,packages,price:meta.price,label:meta.label};
 }
+function pantryEntries(){
+ return (state.pantry||[]).map(x=>typeof x==="string"?{name:x,qty:null}:x)
+}
+function pantryHas(k){let target=displayName(k).toLowerCase(),key=k.toLowerCase();return pantryEntries().some(x=>{let n=x.name.toLowerCase().replaceAll(" ","_");return n===key||n===target.replaceAll(" ","_")||key.includes(n)||n.includes(key)||target.includes(n.replaceAll("_"," "))})}
 function groceryData(){
  let groups={};
- for(const r of state.plan){
-  for(const [k,v] of Object.entries(r.ingredients)){
-   let pantry=state.pantry.map(x=>x.toLowerCase().replaceAll(" ","_"));
-   if(pantry.some(p=>k===p||k.includes(p)||p.includes(k)))continue;
-   let dept=deptMap[k]||"Other";
-   groups[dept]??={};
-   groups[dept][k]??={values:[],recipes:[]};
-   groups[dept][k].values.push(qtyScale(v,state.settings.servings));
-   groups[dept][k].recipes.push(r.name);
-  }
- }
- for(const dept of Object.keys(groups)){
-  for(const k of Object.keys(groups[dept])){
-   let x=groups[dept][k];
-   x.amount=purchaseAmount(k,x.values);
-  }
- }
+ for(const r of state.plan){for(const [rawK,v] of Object.entries(r.ingredients)){
+  let k=canonicalKey(rawK);if(pantryHas(k))continue;let dept=groceryMeta[k]?.dept||deptMap[k]||"Other";groups[dept]??={};groups[dept][k]??={values:[],recipes:[]};groups[dept][k].values.push(qtyScale(v,state.settings.servings));groups[dept][k].recipes.push(r.name);
+ }}
+ for(const dept of Object.keys(groups))for(const k of Object.keys(groups[dept])){let x=groups[dept][k];x.amount=purchaseAmount(k,x.values)}
  return groups;
 }
+function groceryTotals(groups){let total=0,count=0;for(const g of Object.values(groups))for(const x of Object.values(g)){total+=x.amount.cost||0;count+=x.amount.packages||0}return {total,count}}
+function checkedItems(){try{return JSON.parse(localStorage.getItem("mealpilot7checked")||"[]")}catch{return []}}
+function setChecked(k,v){let a=checkedItems().filter(x=>x!==k);if(v)a.push(k);localStorage.setItem("mealpilot7checked",JSON.stringify(a))}
+function substitutionMenu(k){let opts=substitutions[k]||[];if(!opts.length){alert("No saved substitution for this ingredient yet.");return}let labels=opts.map((x,i)=>`${i+1}. ${displayName(x)}`).join("\n");let choice=prompt(`Replace ${displayName(k)} with:\n${labels}\n\nEnter a number, or Cancel.`);if(choice===null)return;let n=+choice;if(n>=1&&n<=opts.length){state.substitutions??={};state.substitutions[k]=opts[n-1];save();show("shop")}}
+function shareGroceryList(){let groups=groceryData(),lines=["MealPilot Grocery List",""];for(const [dept,g] of Object.entries(groups)){lines.push(dept);for(const [k,x] of Object.entries(g))lines.push(`• ${displayName(k)} — Need ${x.amount.needed}; Buy ${x.amount.buy}`)}let custom=state.customGroceries||[];if(custom.length){lines.push("Custom Items");custom.forEach(x=>lines.push(`• ${x}`))}let txt=lines.join("\n");if(navigator.share){navigator.share({title:"MealPilot Grocery List",text:txt}).catch(()=>{})}else{navigator.clipboard?.writeText(txt);alert("Grocery list copied to your clipboard.")}}
 function shopView(){
- let groups=groceryData(), custom=state.customGroceries||[];
- let depts=Object.keys(groups);
- let content=depts.map(dept=>`<div class="card"><h3 style="margin-top:0">${dept}</h3>${
-   Object.entries(groups[dept]).map(([k,x])=>`<div class="listitem">
-   <input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''">
-   <span style="flex:1"><b>${k.replaceAll("_"," ")}</b><br><small>Need: ${x.amount.needed}</small><br><strong>Buy: ${x.amount.buy}</strong><br><small style="color:#9ca3af">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]}</small></span></div>`).join("")
- }</div>`).join("");
+ let groups=groceryData(),custom=state.customGroceries||[],depts=Object.keys(groups),tot=groceryTotals(groups),checked=checkedItems();
+ let content=depts.map(dept=>`<div class="card"><div class="row"><h3 style="margin:0">${dept}</h3><small class="meta">${Object.keys(groups[dept]).length} items</small></div>${Object.entries(groups[dept]).map(([k,x])=>{let id=`${dept}:${k}`,is=checked.includes(id);return `<div class="listitem ${is?'done':''}"><input type="checkbox" ${is?'checked':''} onchange="setChecked('${id}',this.checked);this.parentElement.classList.toggle('done',this.checked)"><span style="flex:1"><b>${displayName(k)}</b><br><small>Need: ${x.amount.needed}</small><br><strong>Buy: ${x.amount.buy}</strong><br><small style="color:#6b7280">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]} · Est. $${(x.amount.cost||0).toFixed(2)}</small></span><button class="secondary" onclick="substitutionMenu('${k}')">Swap</button></div>`}).join("")}</div>`).join("");
  let customHtml=custom.length?`<div class="card"><h3 style="margin-top:0">Custom Items</h3>${custom.map((x,i)=>`<div class="listitem"><input type="checkbox"><span style="flex:1">${x}</span><button class="secondary" onclick="state.customGroceries.splice(${i},1);save();show('shop')">Remove</button></div>`).join("")}</div>`:"";
- return `<h2>Grocery List</h2>
- <div class="card"><div class="row"><div><b>${Object.values(groups).reduce((n,g)=>n+Object.keys(g).length,0)} ingredients</b><div class="meta">${state.settings.servings} servings · pantry-aware</div></div><button onclick="addCustomGrocery()">+ Add Item</button></div></div>
- ${content||`<div class="card empty">Generate a weekly plan first.</div>`}${customHtml}
- <div class="card"><div class="actions"><button onclick="alert('Target handoff is the next integration milestone. Your Target password will never be stored in MealPilot.')">Send to Target</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div></div>`;
+ return `<h2>Grocery List</h2><div class="notice"><b>Package-smart shopping</b><br>MealPilot combines ingredients across your meals and estimates the number of packages to buy. Prices are illustrative estimates, not live Target prices.</div><div class="card"><div class="row"><div><b>${Object.values(groups).reduce((n,g)=>n+Object.keys(g).length,0)} ingredients</b><div class="meta">${state.settings.servings} servings · pantry-aware</div></div><div style="text-align:right"><b>~$${tot.total.toFixed(2)}</b><div class="meta">${tot.count} packages</div></div></div><br><div class="actions"><button onclick="addCustomGrocery()">+ Add Item</button><button class="secondary" onclick="shareGroceryList()">Share / Copy</button></div></div>${content||`<div class="card empty">Generate a weekly plan first.</div>`}${customHtml}<div class="card"><div class="actions"><button onclick="openTargetHandoff()">Prepare for Target</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div><div class="meta" style="margin-top:10px">Target cart integration is the next milestone. MealPilot never stores your Target password.</div></div>`;
 }
+function openTargetHandoff(){let groups=groceryData(),lines=[];for(const g of Object.values(groups))for(const [k,x] of Object.entries(g))lines.push(`${displayName(k)} — ${x.amount.buy}`);let txt=lines.join("\n");if(navigator.clipboard?.writeText){navigator.clipboard.writeText(txt).catch(()=>{});alert("Your package-smart list was copied. Open Target and use it as your shopping checklist. Direct cart handoff is coming in v0.8.")}else alert("Direct Target cart handoff is coming in v0.8.")}
 function addCustomGrocery(){let x=prompt("What do you need?");if(x&&x.trim()){state.customGroceries??=[];state.customGroceries.push(x.trim());save();show("shop")}}
-function pantryView(){return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div></div><div class="card">${state.pantry.length?state.pantry.map((x,i)=>`<div class="listitem"><span>${x}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
-function addPantry(){let x=document.getElementById("pantryInput").value.trim();if(x){state.pantry.push(x);save();show("pantry")}}
+function pantryView(){let items=pantryEntries();return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div><div class="meta" style="margin-top:10px">For now, adding an item means you have enough for the plan. Quantity tracking will be expanded later.</div></div><div class="card">${items.length?items.map((x,i)=>`<div class="listitem"><span>${x.name}${x.qty?` <small class="meta">· ${x.qty}</small>`:""}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
+function addPantry(){let x=document.getElementById("pantryInput").value.trim();if(x){state.pantry??=[];state.pantry.push(x);save();show("pantry")}}
 function profileView(){let s=state.settings;return `<h2>Preferences</h2><div class="card">
 <label>Diet</label><select id="diet"><option value="standard">Standard</option><option value="high-protein">High protein</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select>
 <label>Maximum cooking time</label><select id="maxTime"><option>20</option><option>30</option><option>45</option></select>
