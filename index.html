@@ -158,6 +158,31 @@ body{background:var(--mp13-bg)!important;color:var(--mp13-text)!important;font-f
 .mp13-star{max-width:42px}.mp13-empty{padding:25px 10px;text-align:center;color:var(--mp13-muted);grid-column:1/-1}
 @media(min-width:700px){.mp13-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
+
+<style id="mealpilot-v14-recipe">
+.mp14-overlay{position:fixed;inset:0;background:rgba(10,18,25,.42);z-index:9999;display:flex;align-items:flex-end;justify-content:center}
+.mp14-sheet{width:100%;max-height:92vh;overflow:auto;background:#f6f7f8;border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.2)}
+.mp14-cover{height:190px;background:linear-gradient(135deg,#dff5e9,#f4f8f6);display:flex;align-items:center;justify-content:center;font-size:76px}
+.mp14-content{padding:20px}
+.mp14-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.mp14-title{font-size:27px;font-weight:850;line-height:1.08;letter-spacing:-.03em}
+.mp14-close{border:0!important;background:#fff!important;border-radius:50%!important;width:42px;height:42px;min-height:42px!important;font-size:20px}
+.mp14-sub{color:#697586;margin-top:8px;font-size:14px}
+.mp14-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.mp14-stat{background:#fff;border:1px solid #e1e6ea;border-radius:15px;padding:11px 7px;text-align:center}
+.mp14-stat b{display:block;font-size:16px}.mp14-stat span{font-size:10px;color:#697586}
+.mp14-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
+.mp14-actions button{min-height:46px!important;font-weight:750}
+.mp14-section{background:#fff;border:1px solid #e1e6ea;border-radius:18px;padding:16px;margin-top:12px}
+.mp14-section h3{margin:0 0 12px}
+.mp14-ingredient{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf0f2;font-size:14px}
+.mp14-ingredient:last-child{border-bottom:0}
+.mp14-steps{padding-left:21px;margin:0}.mp14-steps li{padding:7px 0;line-height:1.45}
+.mp14-servings{display:flex;align-items:center;gap:10px}
+.mp14-servings button{min-height:38px!important;width:38px}
+.mp14-servings strong{min-width:25px;text-align:center}
+@media(min-width:700px){.mp14-sheet{max-width:680px;border-radius:26px;margin-bottom:20px}.mp14-overlay{align-items:center}}
+</style>
 </head>
 <body>
 <header><h1>MealPilot</h1><div class="sub">Your weekly meals, planned automatically.</div></header>
@@ -629,6 +654,57 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
  };
  function mount(){if(document.getElementById('mp13-discover'))return;const main=document.querySelector('main')||document.body,box=document.createElement('section');box.id='mp13-discover';box.className='mp13-wrap';box.innerHTML='<div class="mp13-hero"><div class="mp13-eyebrow">Discover</div><h2>Find your next meal</h2><p>Browse, search and save recipes you want to make.</p><div class="mp13-search"><input id="mp13-search" placeholder="Search recipes…"></div></div><div class="mp13-filters"><button class="mp13-filter">All</button><button class="mp13-filter">★ Favorites</button><button class="mp13-filter">Quick</button><button class="mp13-filter">High Protein</button></div><div class="mp13-grid"></div>';main.prepend(box);box.querySelector('#mp13-search').oninput=e=>MealPilotV13.search(e.target.value);render()}
  setTimeout(mount,500);setTimeout(render,1200);
+})();
+</script>
+
+<script>
+(function(){
+ function esc(s){return String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+ function recipes(){return window.recipes||window.RECIPES||window.recipeData||[]}
+ function icon(n){n=(n||'').toLowerCase();if(/fish|salmon|cod|shrimp/.test(n))return'🐟';if(/chicken|turkey/.test(n))return'🍗';if(/beef|steak/.test(n))return'🥩';if(/pasta|noodle/.test(n))return'🍝';if(/taco|burrito|fajita|enchilada/.test(n))return'🌮';if(/curry/.test(n))return'🍛';if(/egg|oat|toast|breakfast/.test(n))return'🍳';return'🥗'}
+ function get(id){return recipes().find(r=>String(r.id||r.name)===String(id))}
+ function ingredients(r){
+   if(Array.isArray(r.ingredients))return r.ingredients;
+   return [];
+ }
+ function steps(r){
+   if(Array.isArray(r.steps))return r.steps;
+   if(Array.isArray(r.instructions))return r.instructions;
+   return [];
+ }
+ function open(id){
+   const r=get(id);if(!r)return;
+   let servings=Number(r.serves||2);
+   const ov=document.createElement('div');ov.className='mp14-overlay';ov.id='mp14-overlay';
+   function draw(){
+    const ing=ingredients(r), st=steps(r), scale=servings/(Number(r.serves||2));
+    ov.innerHTML='<div class="mp14-sheet"><div class="mp14-cover">'+icon(r.name||r.title)+'</div><div class="mp14-content">'+
+    '<div class="mp14-top"><div><div class="mp14-title">'+esc(r.name||r.title)+'</div><div class="mp14-sub">'+esc(r.cuisine||'MealPilot recipe')+'</div></div><button class="mp14-close" id="mp14-close">×</button></div>'+
+    '<div class="mp14-stats"><div class="mp14-stat"><b>'+(r.time||r.totalTime||'—')+'</b><span>MIN</span></div><div class="mp14-stat"><b>'+(r.calories||'—')+'</b><span>CAL</span></div><div class="mp14-stat"><b>'+(r.protein||'—')+'</b><span>PROTEIN</span></div><div class="mp14-stat"><b>'+servings+'</b><span>SERVINGS</span></div></div>'+
+    '<div class="mp14-actions"><button class="primary" id="mp14-add">Add to Plan</button><button class="secondary" id="mp14-cook">Cook This</button></div>'+
+    '<div class="mp14-section"><h3>Servings</h3><div class="mp14-servings"><button class="secondary" id="mp14-minus">−</button><strong>'+servings+'</strong><button class="secondary" id="mp14-plus">+</button></div></div>'+
+    '<div class="mp14-section"><h3>Ingredients</h3>'+ (ing.length?ing.map(x=>{let n=typeof x==='string'?x:(x.name||x.ingredient||'Ingredient');let qv=typeof x==='string'?'':(x.qty||x.quantity||'');return '<div class="mp14-ingredient"><span>'+esc(n)+'</span><b>'+esc(qv)+'</b></div>'}).join(''):'<div class="mp14-sub">Ingredients are available in the recipe card.</div>')+'</div>'+
+    '<div class="mp14-section"><h3>Instructions</h3><ol class="mp14-steps">'+(st.length?st.map(x=>'<li>'+esc(typeof x==='string'?x:(x.text||x.instruction||''))+'</li>').join(''):'<li>Open Cooking Mode to follow the recipe step by step.</li>')+'</ol></div>'+
+    '</div></div>';
+    ov.querySelector('#mp14-close').onclick=()=>ov.remove();
+    ov.querySelector('#mp14-minus').onclick=()=>{if(servings>1){servings--;draw()}};
+    ov.querySelector('#mp14-plus').onclick=()=>{servings++;draw()};
+    ov.querySelector('#mp14-add').onclick=()=>{localStorage.setItem('mealpilot_selected_recipe_v13',String(r.id||r.name));alert('Recipe selected. Choose a day from your weekly plan to add it.')};
+    ov.querySelector('#mp14-cook').onclick=()=>{localStorage.setItem('mealpilot_selected_recipe_v13',String(r.id||r.name));ov.remove();if(typeof startCooking==='function')startCooking(r);else if(typeof cookRecipe==='function')cookRecipe(r);};
+   }
+   document.body.appendChild(ov);draw();
+ }
+ window.MealPilotV14={open:open};
+ // Replace the v1.3 View behavior by intercepting clicks on its cards.
+ document.addEventListener('click',function(e){
+   const b=e.target.closest('button');
+   if(!b)return;
+   if(b.textContent.trim()==='View'){
+     const card=b.closest('.mp13-card');if(!card)return;
+     const cards=[...document.querySelectorAll('.mp13-card')],idx=cards.indexOf(card),a=recipes();
+     if(a[idx]){e.preventDefault();e.stopImmediatePropagation();open(String(a[idx].id||a[idx].name));}
+   }
+ },true);
 })();
 </script>
 </body></html>
