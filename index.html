@@ -51,27 +51,72 @@ const recipes=[
 {id:9,name:"Black Bean & Sweet Potato Tacos",time:30,cal:490,p:17,c:72,f:14,diets:["vegetarian","vegan"],cuisine:"Mexican",tags:["vegetarian","vegan"],ingredients:{black_beans:"2 cans",sweet_potatoes:"2",tortillas:"8",lime:"2",avocado:"2",cumin:"1 tbsp"}},
 {id:10,name:"Lemon Herb Cod & Potatoes",time:30,cal:480,p:43,c:35,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["pescatarian"],ingredients:{cod:"1.5 lb",potatoes:"1.5 lb",green_beans:"1 lb",lemon:"2",olive_oil:"2 tbsp"}},
 {id:11,name:"Turkey Burger Bowls",time:25,cal:530,p:46,c:37,f:21,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{ground_turkey:"1.5 lb",potatoes:"1.5 lb",lettuce:"1 head",tomato:"2",pickles:"1 jar",cheddar:"1/2 lb"}},
-{id:12,name:"Chicken Parmesan Skillet",time:35,cal:620,p:54,c:34,f:29,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",marinara:"1 jar",mozzarella:"1/2 lb",parmesan:"1/2 cup",pasta:"1 lb"}}
+{id:12,name:"Chicken Parmesan Skillet",time:35,cal:620,p:54,c:34,f:29,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",marinara:"1 jar",mozzarella:"1/2 lb",parmesan:"1/2 cup",pasta:"1 lb"}},
+{id:13,name:"Chicken & Black Bean Burrito Bowls",time:30,cal:570,p:50,c:55,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein","meal prep"],ingredients:{chicken:"1.5 lb",black_beans:"1 can",rice:"1 cup",bell_pepper:"2",corn:"1 can",lime:"2",salsa:"1 jar"}},
+{id:14,name:"Teriyaki Chicken & Broccoli",time:25,cal:550,p:49,c:51,f:15,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",broccoli:"2 heads",soy_sauce:"1/4 cup",honey:"2 tbsp",rice:"1 cup",garlic:"3 cloves"}},
+{id:15,name:"Greek Turkey Meatballs",time:35,cal:580,p:48,c:39,f:24,diets:["standard","high-protein"],cuisine:"Greek",tags:["high protein"],ingredients:{ground_turkey:"1.5 lb",feta:"1/2 cup",cucumber:"1",tomato:"2",greek_yogurt:"1 cup",lemon:"1",pita:"4"}},
+{id:16,name:"Creamy Tomato Chicken Pasta",time:35,cal:650,p:52,c:58,f:23,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",pasta:"1 lb",tomatoes:"1 can",cream:"1 cup",parmesan:"1/2 cup",spinach:"5 oz"}},
+{id:17,name:"Steak Fajita Bowls",time:30,cal:670,p:49,c:52,f:30,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],ingredients:{steak:"1.5 lb",bell_pepper:"3",onion:"1",rice:"1 cup",lime:"2",avocado:"2",fajita_seasoning:"1 packet"}},
+{id:18,name:"Honey Garlic Shrimp & Rice",time:25,cal:530,p:38,c:61,f:14,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],ingredients:{shrimp:"1.5 lb",rice:"1 cup",broccoli:"1 head",honey:"2 tbsp",soy_sauce:"1/4 cup",garlic:"4 cloves"}},
+{id:19,name:"Mediterranean Chickpea Bowls",time:20,cal:470,p:18,c:63,f:17,diets:["vegetarian","vegan"],cuisine:"Mediterranean",tags:["quick","vegan"],ingredients:{chickpeas:"2 cans",cucumber:"1",tomato:"2",olive_oil:"2 tbsp",lemon:"1",rice:"1 cup",hummus:"1 tub"}},
+{id:20,name:"Lentil Coconut Curry",time:35,cal:500,p:22,c:67,f:16,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegan"],ingredients:{lentils:"1 lb",coconut_milk:"1 can",spinach:"5 oz",tomatoes:"1 can",curry_powder:"2 tbsp",rice:"1 cup"}},
+{id:21,name:"Veggie Fried Rice",time:25,cal:490,p:17,c:73,f:15,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["quick","vegan"],ingredients:{rice:"2 cups",eggs:"4",carrots:"3",peas:"1 bag",soy_sauce:"1/4 cup",green_onion:"1 bunch"}},
+{id:22,name:"Black Bean Enchilada Skillet",time:30,cal:540,p:22,c:72,f:18,diets:["vegetarian"],cuisine:"Mexican",tags:["vegetarian"],ingredients:{black_beans:"2 cans",corn:"1 can",enchilada_sauce:"1 jar",tortillas:"8",cheddar:"1/2 lb",avocado:"1"}},
+{id:23,name:"Lemon Garlic Shrimp Pasta",time:25,cal:590,p:40,c:68,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["quick","pescatarian"],ingredients:{shrimp:"1.5 lb",pasta:"1 lb",lemon:"2",garlic:"4 cloves",parmesan:"1/2 cup",spinach:"5 oz"}},
+{id:24,name:"Turkey & Sweet Potato Skillet",time:30,cal:560,p:46,c:49,f:19,diets:["standard","high-protein"],cuisine:"American",tags:["high protein"],ingredients:{ground_turkey:"1.5 lb",sweet_potatoes:"2",spinach:"5 oz",onion:"1",cheddar:"1/2 lb"}},
+{id:25,name:"Chicken Caesar Pitas",time:25,cal:540,p:47,c:43,f:20,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",pitas:"6",romaine:"1 head",parmesan:"1/2 cup",caesar_dressing:"1 bottle",lemon:"1"}},
+{id:26,name:"Salsa Verde Chicken Tacos",time:30,cal:510,p:45,c:48,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],ingredients:{chicken:"1.5 lb",tortillas:"8",salsa_verde:"1 jar",avocado:"2",lime:"2",onion:"1"}},
+{id:27,name:"Beef & Broccoli Stir Fry",time:25,cal:570,p:45,c:47,f:21,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],ingredients:{steak:"1.5 lb",broccoli:"2 heads",soy_sauce:"1/4 cup",rice:"1 cup",garlic:"3 cloves",ginger:"1 piece"}},
+{id:28,name:"Baked Cod Tacos",time:30,cal:500,p:42,c:51,f:17,diets:["standard","pescatarian"],cuisine:"Mexican",tags:["pescatarian"],ingredients:{cod:"1.5 lb",tortillas:"8",cabbage:"1/2 head",lime:"2",avocado:"2",greek_yogurt:"1 cup"}},
+{id:29,name:"Spinach Ricotta Pasta",time:30,cal:590,p:28,c:74,f:19,diets:["vegetarian"],cuisine:"Italian",tags:["vegetarian"],ingredients:{pasta:"1 lb",ricotta:"1 tub",spinach:"8 oz",parmesan:"1/2 cup",garlic:"3 cloves",lemon:"1"}},
+{id:30,name:"Tofu Peanut Noodles",time:30,cal:560,p:27,c:64,f:24,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["vegan"],ingredients:{tofu:"1.5 lb",noodles:"1 lb",peanut_butter:"1/2 cup",soy_sauce:"1/4 cup",carrots:"3",green_onion:"1 bunch"}},
+{id:31,name:"Chicken & Rice Soup",time:35,cal:460,p:39,c:51,f:11,diets:["standard","high-protein"],cuisine:"American",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",rice:"1 cup",carrots:"3",celery:"1 bunch",onion:"1",chicken_broth:"2 cartons"}},
+{id:32,name:"Turkey Chili",time:40,cal:580,p:48,c:57,f:17,diets:["standard","high-protein"],cuisine:"American",tags:["high protein","meal prep"],ingredients:{ground_turkey:"1.5 lb",kidney_beans:"2 cans",black_beans:"1 can",tomatoes:"2 cans",onion:"1",chili_powder:"2 tbsp"}},
+{id:33,name:"Greek Salmon Bowls",time:30,cal:610,p:43,c:48,f:27,diets:["standard","pescatarian"],cuisine:"Greek",tags:["pescatarian"],ingredients:{salmon:"1.5 lb",rice:"1 cup",cucumber:"1",tomato:"2",feta:"1/2 cup",greek_yogurt:"1 cup",lemon:"1"}},
+{id:34,name:"Chicken Caprese Skillet",time:30,cal:570,p:50,c:19,f:31,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",mozzarella:"1/2 lb",tomato:"3",basil:"1 bunch",balsamic:"1 bottle",olive_oil:"2 tbsp"}},
+{id:35,name:"Egg & Veggie Breakfast Tacos",time:20,cal:430,p:25,c:43,f:18,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["quick","breakfast"],ingredients:{eggs:"8",tortillas:"8",bell_pepper:"2",onion:"1",cheddar:"1/2 lb",avocado:"1"}},
+{id:36,name:"Overnight Oats with Berries",time:10,cal:390,p:20,c:53,f:12,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{oats:"2 cups",greek_yogurt:"1 cup",milk:"2 cups",berries:"1 pint",chia_seeds:"1/4 cup",honey:"2 tbsp"}},
+{id:37,name:"Peanut Butter Banana Oatmeal",time:10,cal:420,p:16,c:62,f:15,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{oats:"2 cups",bananas:"3",peanut_butter:"1/2 cup",milk:"2 cups",cinnamon:"1 tbsp"}},
+{id:38,name:"Avocado Egg Toast",time:15,cal:410,p:20,c:37,f:21,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{eggs:"6",bread:"1 loaf",avocado:"2",lemon:"1",everything_bagel_seasoning:"1 jar"}},
+{id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],ingredients:{greek_yogurt:"3 cups",berries:"1 pint",granola:"1 bag",honey:"2 tbsp",banana:"2"}},
+{id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],ingredients:{eggs:"8",black_beans:"1 can",tortillas:"8",cheddar:"1/2 lb",potatoes:"1.5 lb",salsa:"1 jar"}}
 ];
-let state=JSON.parse(localStorage.getItem("mealpilot2")||"null")||{plan:[],pantry:[],favorites:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2}};
-function save(){localStorage.setItem("mealpilot2",JSON.stringify(state))}
-function filtered(){let s=state.settings;return recipes.filter(r=>(s.diet==="standard"||r.diets.includes(s.diet))&&r.time<=s.maxTime&&r.p>=s.minProtein)}
+let state=JSON.parse(localStorage.getItem("mealpilot3")||"null")||{plan:[],pantry:[],favorites:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
+function save(){localStorage.setItem("mealpilot3",JSON.stringify(state))}
+function filtered(){
+ let s=state.settings, dislikes=(s.dislikes||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), allergies=(s.allergies||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), cuisines=(s.cuisines||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
+ return recipes.filter(r=>{
+  if(s.diet!=="standard"&&!r.diets.includes(s.diet))return false;
+  if(r.time>s.maxTime||r.p<s.minProtein)return false;
+  if(s.calMax>0&&r.cal>s.calMax)return false;
+  if(cuisines.length&&!cuisines.includes(r.cuisine.toLowerCase()))return false;
+  let ing=Object.keys(r.ingredients).join(" ").toLowerCase(), name=r.name.toLowerCase();
+  if(dislikes.some(x=>ing.includes(x)||name.includes(x)))return false;
+  if(allergies.some(x=>ing.includes(x)||name.includes(x)))return false;
+  return true;
+ })
+}
 function generate(){
- let pool=filtered(); if(pool.length<state.settings.meals){alert("Not enough recipes match your filters. Try a longer cooking time or lower protein requirement.");return}
- let used=new Set(),out=[];
+ let pool=filtered();if(pool.length<state.settings.meals){alert("Not enough recipes match your filters. Try relaxing one preference.");return}
+ let used=new Set(),out=[],recent=state.plan.map(x=>x.id),pantry=new Set(state.pantry.map(x=>x.toLowerCase().replaceAll(" ","_")));
  for(let i=0;i<state.settings.meals;i++){
-   let candidates=pool.filter(r=>!used.has(r.id));
-   // Favor ingredient reuse with already selected meals.
-   if(i>0){let ing=new Set(out.flatMap(r=>Object.keys(r.ingredients)));candidates.sort((a,b)=>score(b,ing)-score(a,ing))}
-   let pick=candidates[Math.floor(Math.random()*Math.min(3,candidates.length))];
-   used.add(pick.id);out.push(pick);
+  let selected=new Set(out.flatMap(r=>Object.keys(r.ingredients)));
+  let candidates=pool.filter(r=>!used.has(r.id));
+  candidates.sort((a,b)=>scorePlan(b,selected,pantry,recent)-scorePlan(a,selected,pantry,recent));
+  let top=candidates.slice(0,Math.min(5,candidates.length));
+  let pick=top[Math.floor(Math.random()*top.length)];used.add(pick.id);out.push(pick);
  }
  state.plan=out;save();show("plan")
+}
+function scorePlan(r,selected,pantry,recent){
+ return Object.keys(r.ingredients).filter(x=>selected.has(x)).length*5+
+        Object.keys(r.ingredients).filter(x=>pantry.has(x)).length*3+
+        (recent.includes(r.id)?-6:0)+(r.p>=state.settings.minProtein?2:0)
 }
 function score(r,ing){return Object.keys(r.ingredients).filter(x=>ing.has(x)).length}
 function planView(){
  let p=state.plan;return `<h2>This Week</h2>
- <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><button onclick="generate()">Generate My Week</button></div></div>
+ <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><button onclick="generate()">Generate My Week</button></div>${p.length?`<div class="meta" style="margin-top:12px">Average: ${Math.round(p.reduce((a,r)=>a+r.cal,0)/p.length)} cal · ${Math.round(p.reduce((a,r)=>a+r.p,0)/p.length)}g protein</div>`:""}</div>
  ${p.length?p.map((r,i)=>`<div class="card meal"><div><small>${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][i]}</small><strong>${r.name}</strong><small>${r.time} min · ${r.cal} cal · ${r.p}g protein</small></div><button class="secondary" onclick="openSwap(${i})">Swap</button></div>`).join(""):`<div class="card empty">No plan yet.<br>Tap <b>Generate My Week</b> to build one.</div>`}
  ${p.length?`<div class="card"><div class="actions"><button onclick="show('shop')">View Grocery List</button><button class="secondary" onclick="cook(${p[0].id})">Start Cooking</button></div></div>`:""}`;
 }
@@ -87,9 +132,13 @@ function renderRecipes(){
  document.getElementById("recipeList").innerHTML=list.map(r=>`<div class="card recipe"><div class="row"><div><h3>${r.name}</h3><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div></div><button onclick="cook(${r.id})">Cook</button></div><div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div><div class="meta" style="margin-top:9px">${Object.entries(r.ingredients).map(([k,v])=>`${k.replaceAll("_"," ")}: ${v}`).join(" · ")}</div></div>`).join("");
 }
 function shopView(){
- let counts={};for(const r of state.plan)for(const [k,v] of Object.entries(r.ingredients)){counts[k]=(counts[k]||[]).concat([v])}
- return `<h2>Grocery List</h2><div class="card notice">Quantities are combined from your current weekly plan. Pantry items can be removed from the shopping list in the Pantry tab.</div>
- <div class="card">${Object.keys(counts).length?Object.entries(counts).map(([k,vs])=>`<div class="listitem"><input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''"><span><b>${k.replaceAll("_"," ")}</b><br><small>${vs.join(" + ")} · ${state.settings.servings} servings</small></span></div>`).join(""):`<div class="empty">Generate a weekly plan first.</div>`}</div>
+ let counts={}, pantry=state.pantry.map(x=>x.toLowerCase().replaceAll(" ","_"));
+ for(const r of state.plan)for(const [k,v] of Object.entries(r.ingredients)){
+  if(pantry.some(p=>k.includes(p)||p.includes(k)))continue;
+  counts[k]=(counts[k]||[]).concat([v]);
+ }
+ return `<h2>Grocery List</h2><div class="card notice">Built from your weekly plan. Pantry matches are excluded from the list.</div>
+ <div class="card">${Object.keys(counts).length?Object.entries(counts).map(([k,vs])=>`<div class="listitem"><input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''"><span><b>${k.replaceAll("_"," ")}</b><br><small>${vs.join(" + ")} · ${state.settings.servings} servings</small></span></div>`).join(""):`<div class="empty">Generate a plan first.</div>`}</div>
  <div class="card"><div class="actions"><button onclick="alert('Target handoff is the next integration milestone. Your Target password will never be stored in MealPilot.')">Send to Target</button><button class="secondary" onclick="window.print()">Print / Save PDF</button></div></div>`;
 }
 function pantryView(){return `<h2>Pantry</h2><div class="card"><div class="row"><input id="pantryInput" type="text" placeholder="e.g. olive oil"><button onclick="addPantry()">Add</button></div></div><div class="card">${state.pantry.length?state.pantry.map((x,i)=>`<div class="listitem"><span>${x}</span><button class="secondary" onclick="state.pantry.splice(${i},1);save();show('pantry')">Remove</button></div>`).join(""):`<div class="empty">Nothing in your pantry yet.</div>`}</div>`}
@@ -99,9 +148,16 @@ function profileView(){let s=state.settings;return `<h2>Preferences</h2><div cla
 <label>Maximum cooking time</label><select id="maxTime"><option>20</option><option>30</option><option>45</option></select>
 <label>Meals per week</label><select id="meals"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
 <label>Minimum protein per meal (g)</label><input id="minProtein" type="number" min="0" step="5" value="${s.minProtein}">
+<label>Maximum calories per meal (0 = no limit)</label><input id="calMax" type="number" min="0" step="25" value="${s.calMax||0}">
 <label>Servings</label><select id="servings"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+<label>Preferred cuisines (comma separated)</label><input id="cuisines" type="text" placeholder="Mexican, Italian" value="${s.cuisines||""}">
+<label>Disliked ingredients (comma separated)</label><input id="dislikes" type="text" placeholder="mushrooms, onions" value="${s.dislikes||""}">
+<label>Allergies (comma separated)</label><input id="allergies" type="text" placeholder="peanuts, shellfish" value="${s.allergies||""}">
 <br><br><button onclick="savePrefs()">Save Preferences & Generate</button></div>`}
-function savePrefs(){state.settings={diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value};save();generate()}
+function savePrefs(){
+ state.settings={diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value,calMax:+calMax.value,cuisines:cuisines.value,dislikes:dislikes.value,allergies:allergies.value};
+ save();generate()
+}
 function cook(id){let r=recipes.find(x=>x.id===id),steps=["Gather and prep all ingredients.","Season the main protein and prepare the vegetables.","Cook the protein until done.","Cook or roast the vegetables and starch.","Combine and finish with the sauce or seasoning.","Plate and serve."];let i=0;let d=document.createElement("dialog");d.innerHTML=`<div class="modal"><h2>${r.name}</h2><div class="meta">${r.time} min · ${r.cal} cal · ${r.p}g protein</div><br><div class="progress"><div id="bar" style="width:17%"></div></div><p id="step" style="font-size:22px;line-height:1.4;margin:30px 0">${steps[0]}</p><div class="row"><button class="secondary" id="back">Back</button><button id="next">Next</button></div></div>`;document.body.appendChild(d);d.showModal();function upd(){step.textContent=steps[i];bar.style.width=((i+1)/steps.length*100)+"%";back.disabled=i===0;next.textContent=i===steps.length-1?"Done":"Next"}back.onclick=()=>{if(i>0){i--;upd()}};next.onclick=()=>{if(i<steps.length-1){i++;upd()}else d.close()};d.addEventListener("close",()=>d.remove());}
 function show(page){document.querySelectorAll("nav button").forEach(b=>b.classList.remove("navactive"));document.getElementById("n"+page).classList.add("navactive");let el=document.getElementById("app");el.innerHTML=page==="plan"?planView():page==="recipes"?recipesView():page==="shop"?shopView():page==="pantry"?pantryView():profileView();
 if(page==="recipes")renderRecipes();
