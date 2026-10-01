@@ -302,6 +302,7 @@ const recipes=[
 {id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],serves:2,ingredients:{greek_yogurt:"2 cups",berries:"1 pint",granola:"1/2 bag",honey:"1 tbsp",banana:"1"}},
 {id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],serves:2,ingredients:{eggs:"4",black_beans:"1/2 can",tortillas:"4",cheddar:"2 oz",potatoes:"8 oz",salsa:"1/2 jar"}}
 ];
+window.MealPilotRecipes=recipes;
 let state=JSON.parse(localStorage.getItem("mealpilot100")||localStorage.getItem("mealpilot82")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],cookedHistory:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
 function save(){state.customGroceries??=[];state.cookedHistory??=[];state.cookedPlan??={};localStorage.setItem("mealpilot100",JSON.stringify(state))}
 function filtered(){
@@ -796,7 +797,7 @@ if(typeof window.render==='function'){let r=window.render;window.render=function
       if(typeof toast==='function')toast((r.name||'Recipe')+' added to '+days[i]);
     });
   }
-  window.MealPilotAddToPlan={open:addToPlan,openById:function(id){var r=recipes.find(function(x){return x.id===id});if(r)addToPlan(r)}};
+  window.MealPilotAddToPlan={open:addToPlan,openById:function(id){var list=window.MealPilotRecipes||[];var r=list.find(function(x){return String(x.id)===String(id)});if(r)addToPlan(r)}};
 })();
 </script>
 </body></html>
