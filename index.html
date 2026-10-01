@@ -30,7 +30,7 @@ label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 .swapOption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
 .swapOption:last-child{border-bottom:0}.swapInfo{min-width:0}.swapName{font-weight:750;font-size:15px}.swapReason{font-size:12px;color:#15803d;margin-top:5px}.swapCurrent{background:#f0f1f3;border-radius:14px;padding:12px;margin:10px 0 12px}.swapSearch{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:none;margin-bottom:8px}
  .sectiontitle{font-weight:750;margin-bottom:6px}
-</style>
+.nutritionGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.nutritionGrid>div{padding:12px;border:1px solid #dfe8e2;border-radius:14px;background:#f8fbf9}.nutritionGrid b{display:block;font-size:20px}.nutritionGrid small{display:block;color:#66736b;margin-top:3px}</style>
 <style>
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;z-index:30;box-shadow:0 8px 30px #0003;font-size:13px;max-width:90%;text-align:center}.fav{font-size:20px;background:transparent!important;color:#6b7280!important;padding:5px}.fav.on{color:#b45309!important}.recipeTap{cursor:pointer}.historyItem{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;background:#f0f1f3;font-size:12px}.sectionTitle{margin:18px 2px 8px}.mutedbox{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:13px;color:var(--muted)}button:disabled{opacity:.45}.recipeDetail h2{margin-top:0}.recipeDetail .ingredientRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
 </style>
@@ -307,7 +307,7 @@ const recipes=[
 {id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],serves:2,ingredients:{eggs:"4",black_beans:"1/2 can",tortillas:"4",cheddar:"2 oz",potatoes:"8 oz",salsa:"1/2 jar"}}
 ];
 window.MealPilotRecipes=recipes;
-let state=JSON.parse(localStorage.getItem("mealpilot100")||localStorage.getItem("mealpilot82")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],cookedHistory:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
+let state=JSON.parse(localStorage.getItem("mealpilot100")||localStorage.getItem("mealpilot82")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],cookedHistory:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:"",calTarget:0,proteinTarget:0,carbMax:0,fatMax:0,fiberTarget:0,sodiumMax:0}};
 function save(){state.customGroceries??=[];state.cookedHistory??=[];state.cookedPlan??={};localStorage.setItem("mealpilot100",JSON.stringify(state))}
 function filtered(){
  let s=state.settings, dislikes=(s.dislikes||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), allergies=(s.allergies||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), cuisines=(s.cuisines||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
@@ -408,7 +408,7 @@ function planView(){
  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
  return `<h2>This Week</h2>
  <div class="card"><div class="row"><div><b>${p.length||0} meals planned</b><div class="meta">${state.settings.servings} servings each</div></div><div class="actions"><button onclick="generate()">Generate My Week</button><button class="secondary" onclick="useWhatIHave()">Use What I Have</button><button class="secondary" onclick="optimizeForWaste()">Reduce Waste</button>${p.length?`<button class="secondary" onclick="clearPlan()">Clear</button>`:""}</div></div>${p.length?`<div class="meta" style="margin-top:12px">Average: ${Math.round(p.reduce((a,r)=>a+r.cal,0)/p.length)} cal · ${Math.round(p.reduce((a,r)=>a+r.p,0)/p.length)}g protein</div>`:""}</div>
- ${p.length?p.map((r,i)=>{let cooked=!!state.cookedPlan[i];return `<div class="card meal"><div style="flex:1"><small>${days[i]}</small><strong>${r.name}</strong><small>${r.time} min · ${r.cal} cal · ${r.p}g protein</small>${cooked?`<span class="tag" style="margin-top:6px;display:inline-block">✓ Cooked</span>`:""}</div><div class="actions"><button onclick="cook(${r.id},${i})">${cooked?'Cook Again':'Cook'}</button><button class="secondary" onclick="markPlanCooked(${i})">${cooked?'Unmark Cooked':'I Cooked This'}</button><button class="secondary" onclick="openSwap(${i})">Swap</button></div></div>`}).join(""):`<div class="card empty">No plan yet.<br>Tap <b>Generate My Week</b> to build one.</div>`}
+ ${p.length?p.map((r,i)=>{let cooked=!!state.cookedPlan[i];return `<div class="card meal"><div style="flex:1"><small>${days[i]}</small><strong>${r.name}</strong><small>${r.time} min · ${nutritionSummary(r)}</small>${cooked?`<span class="tag" style="margin-top:6px;display:inline-block">✓ Cooked</span>`:""}</div><div class="actions"><button onclick="cook(${r.id},${i})">${cooked?'Cook Again':'Cook'}</button><button class="secondary" onclick="markPlanCooked(${i})">${cooked?'Unmark Cooked':'I Cooked This'}</button><button class="secondary" onclick="openSwap(${i})">Swap</button></div></div>`}).join(""):`<div class="card empty">No plan yet.<br>Tap <b>Generate My Week</b> to build one.</div>`}
  ${p.length?`<div class="card"><div class="actions"><button onclick="show('shop')">View Grocery List</button></div></div>`:""}`;
 }
 function markPlanCooked(i){state.cookedPlan??={};if(state.cookedPlan[i])delete state.cookedPlan[i];else state.cookedPlan[i]={id:state.plan[i].id,name:state.plan[i].name,date:new Date().toISOString()};save();show('plan');toast(state.cookedPlan[i]?'Marked cooked':'Marked not cooked')}
@@ -645,6 +645,10 @@ function addPantry(){
 function removePantry(i){state.pantry.splice(i,1);save();show('pantry')}
 function editPantry(i){let x=pantryEntries()[i];if(!x)return;let qty=prompt(`Quantity for ${x.name}`,x.qty??'');if(qty===null)return;let unit=prompt('Unit (oz, lb, cup, tbsp, tsp, each, can, package)',x.unit||'');state.pantry[i]={name:x.name,qty:qty||null,unit:unit||''};save();show('pantry')}
 function clearPantry(){if(confirm('Remove all pantry items?')){state.pantry=[];save();show('pantry')}}
+function nutritionFor(r){return {cal:r.cal||0,p:r.p||0,c:r.c||0,f:r.f||0,fiber:r.fiber||0,sodium:r.sodium||0}}
+function planNutrition(){let totals={cal:0,p:0,c:0,f:0,fiber:0,sodium:0};(state.plan||[]).forEach(r=>{let n=nutritionFor(r);Object.keys(totals).forEach(k=>totals[k]+=n[k])});return totals}
+function nutritionSummary(r){let n=nutritionFor(r);return `${n.cal} cal · ${n.p}g protein · ${n.c}g carbs · ${n.f}g fat`}
+function nutritionTargetStatus(){let s=state.settings,t=planNutrition();let parts=[];if(s.calTarget)parts.push(`${Math.round(t.cal/Math.max(1,state.plan.length))}/${s.calTarget} cal/day`);if(s.proteinTarget)parts.push(`${Math.round(t.p/Math.max(1,state.plan.length))}/${s.proteinTarget}g protein/day`);return parts.join(' · ')}
 function profileView(){let s=state.settings;let hist=state.cookedHistory||[];return `<h2>Preferences</h2><div class="card">
 <label>Diet</label><select id="diet"><option value="standard">Standard</option><option value="high-protein">High protein</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option></select>
 <label>Maximum cooking time</label><select id="maxTime"><option>20</option><option>30</option><option>45</option></select>
@@ -655,11 +659,20 @@ function profileView(){let s=state.settings;let hist=state.cookedHistory||[];ret
 <label>Preferred cuisines (comma separated)</label><input id="cuisines" type="text" placeholder="Mexican, Italian" value="${s.cuisines||""}">
 <label>Disliked ingredients (comma separated)</label><input id="dislikes" type="text" placeholder="mushrooms, onions" value="${s.dislikes||""}">
 <label>Allergies (comma separated)</label><input id="allergies" type="text" placeholder="peanuts, shellfish" value="${s.allergies||""}">
+<h3 class="sectionTitle">Nutrition Targets</h3><div class="mutedbox">These targets guide your weekly plan and appear on the Plan screen. Leave a field at 0 to ignore it.</div>
+<label>Daily calorie target</label><input id="calTarget" type="number" min="0" step="50" value="${s.calTarget||0}">
+<label>Minimum daily protein (g)</label><input id="proteinTarget" type="number" min="0" step="5" value="${s.proteinTarget||0}">
+<label>Maximum daily carbs (g)</label><input id="carbMax" type="number" min="0" step="5" value="${s.carbMax||0}">
+<label>Maximum daily fat (g)</label><input id="fatMax" type="number" min="0" step="5" value="${s.fatMax||0}">
+<label>Minimum daily fiber (g)</label><input id="fiberTarget" type="number" min="0" step="1" value="${s.fiberTarget||0}">
+<label>Maximum daily sodium (mg)</label><input id="sodiumMax" type="number" min="0" step="50" value="${s.sodiumMax||0}">
 <br><br><button onclick="savePrefs()">Save Preferences & Generate</button></div>
-<div class="mutedbox" style="margin-bottom:10px">MealPilot v1.0 saves your plan, favorites, pantry, grocery checks, and cooking history on this device.</div><div class="card"><div class="row"><div><h3 style="margin:0">Favorites</h3><div class="meta">${(state.favorites||[]).length} saved recipes</div></div><button class="secondary" onclick="show('recipes');recipeFilter='favorites';renderRecipes()">View</button></div></div>
+<div class="card"><h3 style="margin-top:0">Nutrition Summary</h3>${state.plan?.length?`<div class="meta">${nutritionTargetStatus()||'Set targets above to guide your plan.'}</div><div class="nutritionGrid" style="margin-top:12px"><div><b>${Math.round(planNutrition().cal)}</b><small>cal/week</small></div><div><b>${Math.round(planNutrition().p)}g</b><small>protein</small></div><div><b>${Math.round(planNutrition().c)}g</b><small>carbs</small></div><div><b>${Math.round(planNutrition().f)}g</b><small>fat</small></div></div>`:`<div class="empty">Generate a plan to see nutrition totals.</div>`}</div>
+<div class="mutedbox" style="margin-bottom:10px">MealPilot v2.0 saves your nutrition targets with the rest of your preferences on this device.</div><div class="card"><div class="row"><div><h3 style="margin:0">Favorites</h3><div class="meta">${(state.favorites||[]).length} saved recipes</div></div><button class="secondary" onclick="show('recipes');recipeFilter='favorites';renderRecipes()">View</button></div></div>
 <div class="card"><h3 style="margin-top:0">Cooking History</h3>${hist.length?hist.slice(0,10).map((x,i)=>`<div class="historyItem"><span><b>${x.name}</b><br><small class="meta">${new Date(x.date).toLocaleDateString()}</small></span><button class="secondary" onclick="cook(${x.id})">Cook Again</button></div>`).join(''):`<div class="empty">Recipes you mark cooked will appear here.</div>`}</div>`}
+
 function savePrefs(){
- state.settings={diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value,calMax:+calMax.value,cuisines:cuisines.value,dislikes:dislikes.value,allergies:allergies.value};
+ state.settings={...state.settings,diet:diet.value,maxTime:+maxTime.value,meals:+meals.value,minProtein:+minProtein.value,servings:+servings.value,calMax:+calMax.value,cuisines:cuisines.value,dislikes:dislikes.value,allergies:allergies.value,calTarget:+calTarget.value||0,proteinTarget:+proteinTarget.value||0,carbMax:+carbMax.value||0,fatMax:+fatMax.value||0,fiberTarget:+fiberTarget.value||0,sodiumMax:+sodiumMax.value||0};
  save();generate()
 }
 function fracVal(x){let m=x.trim().match(/^(\d+)?\s*(\d+)\/(\d+)$/);if(!m)return Number(x);return (m[1]?+m[1]:0)+(+m[2]/+m[3])}
@@ -678,7 +691,7 @@ function clearPlan(){if(confirm("Clear this week's meal plan?")){state.plan=[];s
 
 function show(page){document.querySelectorAll("nav button").forEach(b=>b.classList.remove("navactive"));document.getElementById("n"+page).classList.add("navactive");let el=document.getElementById("app");el.innerHTML=page==="plan"?planView():page==="recipes"?recipesView():page==="shop"?shopView():page==="pantry"?pantryView():profileView();
 if(page==="recipes")renderRecipes();
-if(page==="profile"){diet.value=state.settings.diet;maxTime.value=state.settings.maxTime;meals.value=state.settings.meals;servings.value=state.settings.servings}
+if(page==="profile"){diet.value=state.settings.diet;maxTime.value=state.settings.maxTime;meals.value=state.settings.meals;servings.value=state.settings.servings;minProtein.value=state.settings.minProtein||0;calMax.value=state.settings.calMax||0;cuisines.value=state.settings.cuisines||'';dislikes.value=state.settings.dislikes||'';allergies.value=state.settings.allergies||'';calTarget.value=state.settings.calTarget||0;proteinTarget.value=state.settings.proteinTarget||0;carbMax.value=state.settings.carbMax||0;fatMax.value=state.settings.fatMax||0;fiberTarget.value=state.settings.fiberTarget||0;sodiumMax.value=state.settings.sodiumMax||0}
 }
 show("plan");
 </script>
