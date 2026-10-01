@@ -40,49 +40,49 @@ label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
 <dialog id="swapDlg"><div class="modal"><h2>Swap meal</h2><div id="swapList"></div><button class="secondary" onclick="swapDlg.close()">Cancel</button></div></dialog>
 <script>
 const recipes=[
-{id:1,name:"Garlic Chicken & Roasted Broccoli",time:30,cal:520,p:48,c:25,f:24,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",broccoli:"2 heads",garlic:"4 cloves",olive_oil:"2 tbsp",rice:"1 cup"}},
-{id:2,name:"Turkey Taco Bowls",time:25,cal:560,p:42,c:58,f:18,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],ingredients:{ground_turkey:"1.5 lb",rice:"1 cup",black_beans:"1 can",bell_pepper:"2",lime:"2",salsa:"1 jar"}},
-{id:3,name:"Creamy Tuscan Chicken",time:35,cal:610,p:51,c:20,f:34,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",spinach:"5 oz",sun_dried_tomatoes:"1 jar",cream:"1 cup",parmesan:"1/2 cup",garlic:"3 cloves"}},
-{id:4,name:"Honey-Soy Salmon & Green Beans",time:25,cal:590,p:42,c:31,f:34,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],ingredients:{salmon:"1.5 lb",green_beans:"1 lb",soy_sauce:"1/4 cup",honey:"2 tbsp",rice:"1 cup",garlic:"2 cloves"}},
-{id:5,name:"Chicken Fajita Sheet Pan",time:30,cal:500,p:46,c:39,f:17,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",bell_pepper:"3",onion:"1",tortillas:"8",lime:"2",fajita_seasoning:"1 packet"}},
-{id:6,name:"Greek Chicken Pitas",time:25,cal:540,p:45,c:52,f:17,diets:["standard","high-protein"],cuisine:"Greek",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",pitas:"6",cucumber:"1",tomato:"2",greek_yogurt:"1 cup",lemon:"1",feta:"1/2 cup"}},
-{id:7,name:"Beef & Veggie Rice Bowls",time:30,cal:640,p:43,c:57,f:25,diets:["standard","high-protein"],cuisine:"Asian",tags:["high protein"],ingredients:{ground_beef:"1.5 lb",rice:"1 cup",broccoli:"1 head",carrots:"3",soy_sauce:"1/4 cup"}},
-{id:8,name:"Chickpea Coconut Curry",time:30,cal:520,p:18,c:68,f:19,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegetarian","vegan"],ingredients:{chickpeas:"2 cans",coconut_milk:"1 can",spinach:"5 oz",tomatoes:"1 can",curry_powder:"2 tbsp",rice:"1 cup"}},
-{id:9,name:"Black Bean & Sweet Potato Tacos",time:30,cal:490,p:17,c:72,f:14,diets:["vegetarian","vegan"],cuisine:"Mexican",tags:["vegetarian","vegan"],ingredients:{black_beans:"2 cans",sweet_potatoes:"2",tortillas:"8",lime:"2",avocado:"2",cumin:"1 tbsp"}},
-{id:10,name:"Lemon Herb Cod & Potatoes",time:30,cal:480,p:43,c:35,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["pescatarian"],ingredients:{cod:"1.5 lb",potatoes:"1.5 lb",green_beans:"1 lb",lemon:"2",olive_oil:"2 tbsp"}},
-{id:11,name:"Turkey Burger Bowls",time:25,cal:530,p:46,c:37,f:21,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{ground_turkey:"1.5 lb",potatoes:"1.5 lb",lettuce:"1 head",tomato:"2",pickles:"1 jar",cheddar:"1/2 lb"}},
-{id:12,name:"Chicken Parmesan Skillet",time:35,cal:620,p:54,c:34,f:29,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",marinara:"1 jar",mozzarella:"1/2 lb",parmesan:"1/2 cup",pasta:"1 lb"}},
-{id:13,name:"Chicken & Black Bean Burrito Bowls",time:30,cal:570,p:50,c:55,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein","meal prep"],ingredients:{chicken:"1.5 lb",black_beans:"1 can",rice:"1 cup",bell_pepper:"2",corn:"1 can",lime:"2",salsa:"1 jar"}},
-{id:14,name:"Teriyaki Chicken & Broccoli",time:25,cal:550,p:49,c:51,f:15,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",broccoli:"2 heads",soy_sauce:"1/4 cup",honey:"2 tbsp",rice:"1 cup",garlic:"3 cloves"}},
-{id:15,name:"Greek Turkey Meatballs",time:35,cal:580,p:48,c:39,f:24,diets:["standard","high-protein"],cuisine:"Greek",tags:["high protein"],ingredients:{ground_turkey:"1.5 lb",feta:"1/2 cup",cucumber:"1",tomato:"2",greek_yogurt:"1 cup",lemon:"1",pita:"4"}},
-{id:16,name:"Creamy Tomato Chicken Pasta",time:35,cal:650,p:52,c:58,f:23,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",pasta:"1 lb",tomatoes:"1 can",cream:"1 cup",parmesan:"1/2 cup",spinach:"5 oz"}},
-{id:17,name:"Steak Fajita Bowls",time:30,cal:670,p:49,c:52,f:30,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],ingredients:{steak:"1.5 lb",bell_pepper:"3",onion:"1",rice:"1 cup",lime:"2",avocado:"2",fajita_seasoning:"1 packet"}},
-{id:18,name:"Honey Garlic Shrimp & Rice",time:25,cal:530,p:38,c:61,f:14,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],ingredients:{shrimp:"1.5 lb",rice:"1 cup",broccoli:"1 head",honey:"2 tbsp",soy_sauce:"1/4 cup",garlic:"4 cloves"}},
-{id:19,name:"Mediterranean Chickpea Bowls",time:20,cal:470,p:18,c:63,f:17,diets:["vegetarian","vegan"],cuisine:"Mediterranean",tags:["quick","vegan"],ingredients:{chickpeas:"2 cans",cucumber:"1",tomato:"2",olive_oil:"2 tbsp",lemon:"1",rice:"1 cup",hummus:"1 tub"}},
-{id:20,name:"Lentil Coconut Curry",time:35,cal:500,p:22,c:67,f:16,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegan"],ingredients:{lentils:"1 lb",coconut_milk:"1 can",spinach:"5 oz",tomatoes:"1 can",curry_powder:"2 tbsp",rice:"1 cup"}},
-{id:21,name:"Veggie Fried Rice",time:25,cal:490,p:17,c:73,f:15,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["quick","vegan"],ingredients:{rice:"2 cups",eggs:"4",carrots:"3",peas:"1 bag",soy_sauce:"1/4 cup",green_onion:"1 bunch"}},
-{id:22,name:"Black Bean Enchilada Skillet",time:30,cal:540,p:22,c:72,f:18,diets:["vegetarian"],cuisine:"Mexican",tags:["vegetarian"],ingredients:{black_beans:"2 cans",corn:"1 can",enchilada_sauce:"1 jar",tortillas:"8",cheddar:"1/2 lb",avocado:"1"}},
-{id:23,name:"Lemon Garlic Shrimp Pasta",time:25,cal:590,p:40,c:68,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["quick","pescatarian"],ingredients:{shrimp:"1.5 lb",pasta:"1 lb",lemon:"2",garlic:"4 cloves",parmesan:"1/2 cup",spinach:"5 oz"}},
-{id:24,name:"Turkey & Sweet Potato Skillet",time:30,cal:560,p:46,c:49,f:19,diets:["standard","high-protein"],cuisine:"American",tags:["high protein"],ingredients:{ground_turkey:"1.5 lb",sweet_potatoes:"2",spinach:"5 oz",onion:"1",cheddar:"1/2 lb"}},
-{id:25,name:"Chicken Caesar Pitas",time:25,cal:540,p:47,c:43,f:20,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],ingredients:{chicken:"1.5 lb",pitas:"6",romaine:"1 head",parmesan:"1/2 cup",caesar_dressing:"1 bottle",lemon:"1"}},
-{id:26,name:"Salsa Verde Chicken Tacos",time:30,cal:510,p:45,c:48,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],ingredients:{chicken:"1.5 lb",tortillas:"8",salsa_verde:"1 jar",avocado:"2",lime:"2",onion:"1"}},
-{id:27,name:"Beef & Broccoli Stir Fry",time:25,cal:570,p:45,c:47,f:21,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],ingredients:{steak:"1.5 lb",broccoli:"2 heads",soy_sauce:"1/4 cup",rice:"1 cup",garlic:"3 cloves",ginger:"1 piece"}},
-{id:28,name:"Baked Cod Tacos",time:30,cal:500,p:42,c:51,f:17,diets:["standard","pescatarian"],cuisine:"Mexican",tags:["pescatarian"],ingredients:{cod:"1.5 lb",tortillas:"8",cabbage:"1/2 head",lime:"2",avocado:"2",greek_yogurt:"1 cup"}},
-{id:29,name:"Spinach Ricotta Pasta",time:30,cal:590,p:28,c:74,f:19,diets:["vegetarian"],cuisine:"Italian",tags:["vegetarian"],ingredients:{pasta:"1 lb",ricotta:"1 tub",spinach:"8 oz",parmesan:"1/2 cup",garlic:"3 cloves",lemon:"1"}},
-{id:30,name:"Tofu Peanut Noodles",time:30,cal:560,p:27,c:64,f:24,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["vegan"],ingredients:{tofu:"1.5 lb",noodles:"1 lb",peanut_butter:"1/2 cup",soy_sauce:"1/4 cup",carrots:"3",green_onion:"1 bunch"}},
-{id:31,name:"Chicken & Rice Soup",time:35,cal:460,p:39,c:51,f:11,diets:["standard","high-protein"],cuisine:"American",tags:["comfort","high protein"],ingredients:{chicken:"1.5 lb",rice:"1 cup",carrots:"3",celery:"1 bunch",onion:"1",chicken_broth:"2 cartons"}},
-{id:32,name:"Turkey Chili",time:40,cal:580,p:48,c:57,f:17,diets:["standard","high-protein"],cuisine:"American",tags:["high protein","meal prep"],ingredients:{ground_turkey:"1.5 lb",kidney_beans:"2 cans",black_beans:"1 can",tomatoes:"2 cans",onion:"1",chili_powder:"2 tbsp"}},
-{id:33,name:"Greek Salmon Bowls",time:30,cal:610,p:43,c:48,f:27,diets:["standard","pescatarian"],cuisine:"Greek",tags:["pescatarian"],ingredients:{salmon:"1.5 lb",rice:"1 cup",cucumber:"1",tomato:"2",feta:"1/2 cup",greek_yogurt:"1 cup",lemon:"1"}},
-{id:34,name:"Chicken Caprese Skillet",time:30,cal:570,p:50,c:19,f:31,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],ingredients:{chicken:"1.5 lb",mozzarella:"1/2 lb",tomato:"3",basil:"1 bunch",balsamic:"1 bottle",olive_oil:"2 tbsp"}},
-{id:35,name:"Egg & Veggie Breakfast Tacos",time:20,cal:430,p:25,c:43,f:18,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["quick","breakfast"],ingredients:{eggs:"8",tortillas:"8",bell_pepper:"2",onion:"1",cheddar:"1/2 lb",avocado:"1"}},
-{id:36,name:"Overnight Oats with Berries",time:10,cal:390,p:20,c:53,f:12,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{oats:"2 cups",greek_yogurt:"1 cup",milk:"2 cups",berries:"1 pint",chia_seeds:"1/4 cup",honey:"2 tbsp"}},
-{id:37,name:"Peanut Butter Banana Oatmeal",time:10,cal:420,p:16,c:62,f:15,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{oats:"2 cups",bananas:"3",peanut_butter:"1/2 cup",milk:"2 cups",cinnamon:"1 tbsp"}},
-{id:38,name:"Avocado Egg Toast",time:15,cal:410,p:20,c:37,f:21,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],ingredients:{eggs:"6",bread:"1 loaf",avocado:"2",lemon:"1",everything_bagel_seasoning:"1 jar"}},
-{id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],ingredients:{greek_yogurt:"3 cups",berries:"1 pint",granola:"1 bag",honey:"2 tbsp",banana:"2"}},
-{id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],ingredients:{eggs:"8",black_beans:"1 can",tortillas:"8",cheddar:"1/2 lb",potatoes:"1.5 lb",salsa:"1 jar"}}
+{id:1,name:"Garlic Chicken & Roasted Broccoli",time:30,cal:520,p:48,c:25,f:24,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],serves:2,ingredients:{chicken:"10 oz",broccoli:"12 oz",garlic:"3 cloves",olive_oil:"1 tbsp",rice:"1/2 cup"}},
+{id:2,name:"Turkey Taco Bowls",time:25,cal:560,p:42,c:58,f:18,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],serves:2,ingredients:{ground_turkey:"10 oz",rice:"1/2 cup",black_beans:"1/2 can",bell_pepper:"1",lime:"1",salsa:"1/2 jar"}},
+{id:3,name:"Creamy Tuscan Chicken",time:35,cal:610,p:51,c:20,f:34,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],serves:2,ingredients:{chicken:"10 oz",spinach:"3 oz",sun_dried_tomatoes:"1/2 jar",cream:"1/2 cup",parmesan:"1/4 cup",garlic:"2 cloves"}},
+{id:4,name:"Honey-Soy Salmon & Green Beans",time:25,cal:590,p:42,c:31,f:34,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],serves:2,ingredients:{salmon:"10 oz",green_beans:"12 oz",soy_sauce:"2 tbsp",honey:"1 tbsp",rice:"1/2 cup",garlic:"2 cloves"}},
+{id:5,name:"Chicken Fajita Sheet Pan",time:30,cal:500,p:46,c:39,f:17,diets:["standard","high-protein"],cuisine:"Mexican",tags:["quick","high protein"],serves:2,ingredients:{chicken:"10 oz",bell_pepper:"2",onion:"1/2",tortillas:"4",lime:"1",fajita_seasoning:"1/2 packet"}},
+{id:6,name:"Greek Chicken Pitas",time:25,cal:540,p:45,c:52,f:17,diets:["standard","high-protein"],cuisine:"Greek",tags:["quick","high protein"],serves:2,ingredients:{chicken:"10 oz",pitas:"2",cucumber:"1/2",tomato:"1",greek_yogurt:"1/2 cup",lemon:"1/2",feta:"1/4 cup"}},
+{id:7,name:"Beef & Veggie Rice Bowls",time:30,cal:640,p:43,c:57,f:25,diets:["standard","high-protein"],cuisine:"Asian",tags:["high protein"],serves:2,ingredients:{ground_beef:"10 oz",rice:"1/2 cup",broccoli:"8 oz",carrots:"2",soy_sauce:"2 tbsp"}},
+{id:8,name:"Chickpea Coconut Curry",time:30,cal:520,p:18,c:68,f:19,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegetarian","vegan"],serves:2,ingredients:{chickpeas:"1 can",coconut_milk:"1/2 can",spinach:"3 oz",tomatoes:"1/2 can",curry_powder:"1 tbsp",rice:"1/2 cup"}},
+{id:9,name:"Black Bean & Sweet Potato Tacos",time:30,cal:490,p:17,c:72,f:14,diets:["vegetarian","vegan"],cuisine:"Mexican",tags:["vegetarian","vegan"],serves:2,ingredients:{black_beans:"1 can",sweet_potatoes:"1",tortillas:"4",lime:"1",avocado:"1",cumin:"1/2 tbsp"}},
+{id:10,name:"Lemon Herb Cod & Potatoes",time:30,cal:480,p:43,c:35,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["pescatarian"],serves:2,ingredients:{cod:"10 oz",potatoes:"12 oz",green_beans:"10 oz",lemon:"1",olive_oil:"1 tbsp"}},
+{id:11,name:"Turkey Burger Bowls",time:25,cal:530,p:46,c:37,f:21,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],serves:2,ingredients:{ground_turkey:"10 oz",potatoes:"12 oz",lettuce:"1/2 head",tomato:"1",pickles:"1/2 jar",cheddar:"2 oz"}},
+{id:12,name:"Chicken Parmesan Skillet",time:35,cal:620,p:54,c:34,f:29,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],serves:2,ingredients:{chicken:"10 oz",marinara:"1/2 jar",mozzarella:"3 oz",parmesan:"1/4 cup",pasta:"4 oz"}},
+{id:13,name:"Chicken & Black Bean Burrito Bowls",time:30,cal:570,p:50,c:55,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein","meal prep"],serves:2,ingredients:{chicken:"10 oz",black_beans:"1/2 can",rice:"1/2 cup",bell_pepper:"1",corn:"1/2 can",lime:"1",salsa:"1/2 jar"}},
+{id:14,name:"Teriyaki Chicken & Broccoli",time:25,cal:550,p:49,c:51,f:15,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],serves:2,ingredients:{chicken:"10 oz",broccoli:"12 oz",soy_sauce:"2 tbsp",honey:"1 tbsp",rice:"1/2 cup",garlic:"2 cloves"}},
+{id:15,name:"Greek Turkey Meatballs",time:35,cal:580,p:48,c:39,f:24,diets:["standard","high-protein"],cuisine:"Greek",tags:["high protein"],serves:2,ingredients:{ground_turkey:"10 oz",feta:"1/4 cup",cucumber:"1/2",tomato:"1",greek_yogurt:"1/2 cup",lemon:"1/2",pita:"2"}},
+{id:16,name:"Creamy Tomato Chicken Pasta",time:35,cal:650,p:52,c:58,f:23,diets:["standard","high-protein"],cuisine:"Italian",tags:["comfort","high protein"],serves:2,ingredients:{chicken:"10 oz",pasta:"4 oz",tomatoes:"1/2 can",cream:"1/2 cup",parmesan:"1/4 cup",spinach:"3 oz"}},
+{id:17,name:"Steak Fajita Bowls",time:30,cal:670,p:49,c:52,f:30,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],serves:2,ingredients:{steak:"10 oz",bell_pepper:"2",onion:"1/2",rice:"1/2 cup",lime:"1",avocado:"1",fajita_seasoning:"1/2 packet"}},
+{id:18,name:"Honey Garlic Shrimp & Rice",time:25,cal:530,p:38,c:61,f:14,diets:["standard","pescatarian"],cuisine:"Asian",tags:["quick","pescatarian"],serves:2,ingredients:{shrimp:"10 oz",rice:"1/2 cup",broccoli:"8 oz",honey:"1 tbsp",soy_sauce:"2 tbsp",garlic:"2 cloves"}},
+{id:19,name:"Mediterranean Chickpea Bowls",time:20,cal:470,p:18,c:63,f:17,diets:["vegetarian","vegan"],cuisine:"Mediterranean",tags:["quick","vegan"],serves:2,ingredients:{chickpeas:"1 can",cucumber:"1/2",tomato:"1",olive_oil:"1 tbsp",lemon:"1/2",rice:"1/2 cup",hummus:"1/2 tub"}},
+{id:20,name:"Lentil Coconut Curry",time:35,cal:500,p:22,c:67,f:16,diets:["vegetarian","vegan"],cuisine:"Indian",tags:["vegan"],serves:2,ingredients:{lentils:"8 oz",coconut_milk:"1/2 can",spinach:"3 oz",tomatoes:"1/2 can",curry_powder:"1 tbsp",rice:"1/2 cup"}},
+{id:21,name:"Veggie Fried Rice",time:25,cal:490,p:17,c:73,f:15,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["quick","vegan"],serves:2,ingredients:{rice:"1 cup",eggs:"2",carrots:"2",peas:"4 oz",soy_sauce:"2 tbsp",green_onion:"1/2 bunch"}},
+{id:22,name:"Black Bean Enchilada Skillet",time:30,cal:540,p:22,c:72,f:18,diets:["vegetarian"],cuisine:"Mexican",tags:["vegetarian"],serves:2,ingredients:{black_beans:"1 can",corn:"1/2 can",enchilada_sauce:"1/2 jar",tortillas:"4",cheddar:"3 oz",avocado:"1/2"}},
+{id:23,name:"Lemon Garlic Shrimp Pasta",time:25,cal:590,p:40,c:68,f:18,diets:["standard","pescatarian"],cuisine:"Mediterranean",tags:["quick","pescatarian"],serves:2,ingredients:{shrimp:"10 oz",pasta:"4 oz",lemon:"1",garlic:"3 cloves",parmesan:"1/4 cup",spinach:"3 oz"}},
+{id:24,name:"Turkey & Sweet Potato Skillet",time:30,cal:560,p:46,c:49,f:19,diets:["standard","high-protein"],cuisine:"American",tags:["high protein"],serves:2,ingredients:{ground_turkey:"10 oz",sweet_potatoes:"1",spinach:"3 oz",onion:"1/2",cheddar:"3 oz"}},
+{id:25,name:"Chicken Caesar Pitas",time:25,cal:540,p:47,c:43,f:20,diets:["standard","high-protein"],cuisine:"American",tags:["quick","high protein"],serves:2,ingredients:{chicken:"10 oz",pitas:"2",romaine:"1/2 head",parmesan:"1/4 cup",caesar_dressing:"1/2 bottle",lemon:"1/2"}},
+{id:26,name:"Salsa Verde Chicken Tacos",time:30,cal:510,p:45,c:48,f:16,diets:["standard","high-protein"],cuisine:"Mexican",tags:["high protein"],serves:2,ingredients:{chicken:"10 oz",tortillas:"4",salsa_verde:"1/2 jar",avocado:"1",lime:"1",onion:"1/2"}},
+{id:27,name:"Beef & Broccoli Stir Fry",time:25,cal:570,p:45,c:47,f:21,diets:["standard","high-protein"],cuisine:"Asian",tags:["quick","high protein"],serves:2,ingredients:{steak:"10 oz",broccoli:"12 oz",soy_sauce:"2 tbsp",rice:"1/2 cup",garlic:"2 cloves",ginger:"1/2 piece"}},
+{id:28,name:"Baked Cod Tacos",time:30,cal:500,p:42,c:51,f:17,diets:["standard","pescatarian"],cuisine:"Mexican",tags:["pescatarian"],serves:2,ingredients:{cod:"10 oz",tortillas:"4",cabbage:"8 oz",lime:"1",avocado:"1",greek_yogurt:"1/2 cup"}},
+{id:29,name:"Spinach Ricotta Pasta",time:30,cal:590,p:28,c:74,f:19,diets:["vegetarian"],cuisine:"Italian",tags:["vegetarian"],serves:2,ingredients:{pasta:"4 oz",ricotta:"1/2 tub",spinach:"5 oz",parmesan:"1/4 cup",garlic:"2 cloves",lemon:"1/2"}},
+{id:30,name:"Tofu Peanut Noodles",time:30,cal:560,p:27,c:64,f:24,diets:["vegetarian","vegan"],cuisine:"Asian",tags:["vegan"],serves:2,ingredients:{tofu:"10 oz",noodles:"4 oz",peanut_butter:"1/4 cup",soy_sauce:"2 tbsp",carrots:"2",green_onion:"1/2 bunch"}},
+{id:31,name:"Chicken & Rice Soup",time:35,cal:460,p:39,c:51,f:11,diets:["standard","high-protein"],cuisine:"American",tags:["comfort","high protein"],serves:2,ingredients:{chicken:"10 oz",rice:"1/2 cup",carrots:"2",celery:"1/2 bunch",onion:"1/2",chicken_broth:"1 carton"}},
+{id:32,name:"Turkey Chili",time:40,cal:580,p:48,c:57,f:17,diets:["standard","high-protein"],cuisine:"American",tags:["high protein","meal prep"],serves:2,ingredients:{ground_turkey:"10 oz",kidney_beans:"1 can",black_beans:"1/2 can",tomatoes:"1 can",onion:"1/2",chili_powder:"1 tbsp"}},
+{id:33,name:"Greek Salmon Bowls",time:30,cal:610,p:43,c:48,f:27,diets:["standard","pescatarian"],cuisine:"Greek",tags:["pescatarian"],serves:2,ingredients:{salmon:"10 oz",rice:"1/2 cup",cucumber:"1/2",tomato:"1",feta:"1/4 cup",greek_yogurt:"1/2 cup",lemon:"1/2"}},
+{id:34,name:"Chicken Caprese Skillet",time:30,cal:570,p:50,c:19,f:31,diets:["standard","high-protein"],cuisine:"Italian",tags:["high protein"],serves:2,ingredients:{chicken:"10 oz",mozzarella:"3 oz",tomato:"2",basil:"1/2 bunch",balsamic:"2 tbsp",olive_oil:"1 tbsp"}},
+{id:35,name:"Egg & Veggie Breakfast Tacos",time:20,cal:430,p:25,c:43,f:18,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["quick","breakfast"],serves:2,ingredients:{eggs:"4",tortillas:"4",bell_pepper:"1",onion:"1/2",cheddar:"2 oz",avocado:"1/2"}},
+{id:36,name:"Overnight Oats with Berries",time:10,cal:390,p:20,c:53,f:12,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],serves:2,ingredients:{oats:"1 cup",greek_yogurt:"1/2 cup",milk:"1 cup",berries:"1/2 pint",chia_seeds:"2 tbsp",honey:"1 tbsp"}},
+{id:37,name:"Peanut Butter Banana Oatmeal",time:10,cal:420,p:16,c:62,f:15,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],serves:2,ingredients:{oats:"1 cup",bananas:"2",peanut_butter:"2 tbsp",milk:"1 cup",cinnamon:"1 tsp"}},
+{id:38,name:"Avocado Egg Toast",time:15,cal:410,p:20,c:37,f:21,diets:["standard","vegetarian"],cuisine:"American",tags:["quick","breakfast"],serves:2,ingredients:{eggs:"4",bread:"4 slices",avocado:"1",lemon:"1/2",everything_bagel_seasoning:"1 tsp"}},
+{id:39,name:"Berry Greek Yogurt Bowls",time:10,cal:350,p:24,c:42,f:10,diets:["standard","vegetarian"],cuisine:"Greek",tags:["quick","breakfast"],serves:2,ingredients:{greek_yogurt:"2 cups",berries:"1 pint",granola:"1/2 bag",honey:"1 tbsp",banana:"1"}},
+{id:40,name:"Breakfast Burritos",time:25,cal:520,p:31,c:52,f:21,diets:["standard","vegetarian"],cuisine:"Mexican",tags:["breakfast"],serves:2,ingredients:{eggs:"4",black_beans:"1/2 can",tortillas:"4",cheddar:"2 oz",potatoes:"8 oz",salsa:"1/2 jar"}}
 ];
-let state=JSON.parse(localStorage.getItem("mealpilot3")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
-function save(){state.customGroceries??=[];localStorage.setItem("mealpilot3",JSON.stringify(state))}
+let state=JSON.parse(localStorage.getItem("mealpilot6")||"null")||{plan:[],pantry:[],favorites:[],customGroceries:[],settings:{diet:"standard",maxTime:30,meals:5,minProtein:0,servings:2,calMax:0,cuisines:"",dislikes:"",allergies:""}};
+function save(){state.customGroceries??=[];localStorage.setItem("mealpilot6",JSON.stringify(state))}
 function filtered(){
  let s=state.settings, dislikes=(s.dislikes||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), allergies=(s.allergies||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean), cuisines=(s.cuisines||"").toLowerCase().split(",").map(x=>x.trim()).filter(Boolean);
  return recipes.filter(r=>{
@@ -144,8 +144,35 @@ function qtyScale(v,servings){
  let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);if(!m)return v;
  let n=parseFloat(m[1])*(servings/2),unit=m[2];
  let rounded=Math.round(n*4)/4;
- let shown=Number.isInteger(rounded)?String(rounded):String(rounded);
- return shown+" "+unit;
+ return (Number.isInteger(rounded)?String(rounded):String(rounded))+" "+unit;
+}
+
+const purchaseRules={
+ chicken:{unit:"lb",pack:1},ground_turkey:{unit:"lb",pack:1},ground_beef:{unit:"lb",pack:1},steak:{unit:"lb",pack:1},salmon:{unit:"lb",pack:1},shrimp:{unit:"lb",pack:1},cod:{unit:"lb",pack:1},
+ broccoli:{unit:"head",pack:1},bell_pepper:{unit:"each",pack:1},onion:{unit:"each",pack:1},lime:{unit:"each",pack:1},lemon:{unit:"each",pack:1},spinach:{unit:"oz",pack:5},cucumber:{unit:"each",pack:1},tomato:{unit:"each",pack:1},carrots:{unit:"each",pack:1},green_beans:{unit:"lb",pack:1},sweet_potatoes:{unit:"each",pack:1},avocado:{unit:"each",pack:1},lettuce:{unit:"head",pack:1},romaine:{unit:"head",pack:1},cabbage:{unit:"head",pack:1},basil:{unit:"bunch",pack:1},celery:{unit:"bunch",pack:1},ginger:{unit:"piece",pack:1},green_onion:{unit:"bunch",pack:1},bananas:{unit:"each",pack:1},berries:{unit:"pint",pack:1},
+ eggs:{unit:"each",pack:12},greek_yogurt:{unit:"container",pack:1},cream:{unit:"cup",pack:1},parmesan:{unit:"cup",pack:1},mozzarella:{unit:"lb",pack:1},cheddar:{unit:"lb",pack:1},feta:{unit:"cup",pack:1},ricotta:{unit:"tub",pack:1},milk:{unit:"carton",pack:1},
+ rice:{unit:"cup",pack:1},pasta:{unit:"lb",pack:1},noodles:{unit:"lb",pack:1},oats:{unit:"container",pack:1},bread:{unit:"loaf",pack:1},tortillas:{unit:"pack",pack:1},pitas:{unit:"pack",pack:1},pita:{unit:"pack",pack:1},hummus:{unit:"tub",pack:1},granola:{unit:"bag",pack:1},chia_seeds:{unit:"bag",pack:1},peanut_butter:{unit:"jar",pack:1},
+ black_beans:{unit:"can",pack:1},kidney_beans:{unit:"can",pack:1},chickpeas:{unit:"can",pack:1},lentils:{unit:"lb",pack:1},tomatoes:{unit:"can",pack:1},marinara:{unit:"jar",pack:1},salsa:{unit:"jar",pack:1},salsa_verde:{unit:"jar",pack:1},enchilada_sauce:{unit:"jar",pack:1},coconut_milk:{unit:"can",pack:1},corn:{unit:"can",pack:1},peas:{unit:"bag",pack:1},
+ soy_sauce:{unit:"bottle",pack:1},honey:{unit:"bottle",pack:1},olive_oil:{unit:"bottle",pack:1},balsamic:{unit:"bottle",pack:1},caesar_dressing:{unit:"bottle",pack:1},chicken_broth:{unit:"carton",pack:1},
+ garlic:{unit:"head",pack:1},fajita_seasoning:{unit:"packet",pack:1},curry_powder:{unit:"container",pack:1},chili_powder:{unit:"container",pack:1},cumin:{unit:"container",pack:1},cinnamon:{unit:"container",pack:1},everything_bagel_seasoning:{unit:"container",pack:1}
+};
+function parseAmount(v){
+ let m=v.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
+ return m?{n:parseFloat(m[1]),unit:m[2].trim()}:{n:null,unit:v};
+}
+function purchaseAmount(key, recipeValues){
+ let parsed=recipeValues.map(parseAmount);
+ if(parsed.some(x=>x.n===null))return {needed:recipeValues.join(" + "),buy:recipeValues.join(" + ")};
+ let total=parsed.reduce((a,x)=>a+x.n,0), rule=purchaseRules[key], u=parsed[0].unit;
+ if(["black_beans","kidney_beans","chickpeas","tomatoes","corn","coconut_milk"].includes(key)){
+  let cans=Math.ceil(total);return {needed:`${total} ${u}`,buy:`${cans} can${cans===1?"":"s"}`}
+ }
+ if(key==="garlic"&&u.includes("clove")){let heads=Math.ceil(total/10);return {needed:`${total} cloves`,buy:`${heads} head${heads===1?"":"s"}`}}
+ if(!rule)return {needed:`${total} ${u}`,buy:`${total} ${u}`};
+ if(rule.unit==="lb"&&u==="oz"){let lbs=total/16;return {needed:`${total} oz`,buy:`${Math.ceil(lbs*4)/4} lb`}}
+ if(rule.unit==="oz"&&u==="oz")return {needed:`${total} oz`,buy:`${Math.ceil(total)} oz`};
+ if(rule.unit==="each"||rule.unit==="head"||rule.unit==="bunch")return {needed:`${total} ${u}`,buy:`${Math.ceil(total)} ${rule.unit}${Math.ceil(total)===1?"":"s"}`};
+ return {needed:`${total} ${u}`,buy:`${Math.ceil(total)} ${rule.unit}${Math.ceil(total)===1?"":"s"}`};
 }
 function groceryData(){
  let groups={};
@@ -155,9 +182,15 @@ function groceryData(){
    if(pantry.some(p=>k===p||k.includes(p)||p.includes(k)))continue;
    let dept=deptMap[k]||"Other";
    groups[dept]??={};
-   groups[dept][k]??={qty:[],recipes:[]};
-   groups[dept][k].qty.push(qtyScale(v,state.settings.servings));
+   groups[dept][k]??={values:[],recipes:[]};
+   groups[dept][k].values.push(qtyScale(v,state.settings.servings));
    groups[dept][k].recipes.push(r.name);
+  }
+ }
+ for(const dept of Object.keys(groups)){
+  for(const k of Object.keys(groups[dept])){
+   let x=groups[dept][k];
+   x.amount=purchaseAmount(k,x.values);
   }
  }
  return groups;
@@ -168,7 +201,7 @@ function shopView(){
  let content=depts.map(dept=>`<div class="card"><h3 style="margin-top:0">${dept}</h3>${
    Object.entries(groups[dept]).map(([k,x])=>`<div class="listitem">
    <input type="checkbox" onchange="this.parentElement.style.textDecoration=this.checked?'line-through':''">
-   <span style="flex:1"><b>${k.replaceAll("_"," ")}</b><br><small>${x.qty.join(" + ")}</small><br><small style="color:#9ca3af">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]}</small></span></div>`).join("")
+   <span style="flex:1"><b>${k.replaceAll("_"," ")}</b><br><small>Need: ${x.amount.needed}</small><br><strong>Buy: ${x.amount.buy}</strong><br><small style="color:#9ca3af">Used in ${x.recipes.length>1?x.recipes.length+" meals":x.recipes[0]}</small></span></div>`).join("")
  }</div>`).join("");
  let customHtml=custom.length?`<div class="card"><h3 style="margin-top:0">Custom Items</h3>${custom.map((x,i)=>`<div class="listitem"><input type="checkbox"><span style="flex:1">${x}</span><button class="secondary" onclick="state.customGroceries.splice(${i},1);save();show('shop')">Remove</button></div>`).join("")}</div>`:"";
  return `<h2>Grocery List</h2>
