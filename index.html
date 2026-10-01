@@ -161,7 +161,7 @@ const groceryMeta={
  feta:{name:"Feta cheese",dept:"Dairy & Eggs",kind:"volume",pack:8,packUnit:"oz",label:"8 oz container",price:4.49},
  ricotta:{name:"Ricotta cheese",dept:"Dairy & Eggs",kind:"weight",pack:15,packUnit:"oz",label:"15 oz tub",price:3.49},
  milk:{name:"Milk",dept:"Dairy & Eggs",kind:"volume",pack:64,packUnit:"oz",label:"half-gallon",price:2.99},
- broccoli:{name:"Broccoli crowns",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 crown",price:2.49},
+ broccoli:{name:"Broccoli crowns",dept:"Produce",kind:"count",pack:1,packUnit:"head",eachPerUnit:8,unitNames:["oz","ounce","ounces"],label:"1 crown (~8 oz)",price:2.49},
  bell_pepper:{name:"Bell peppers",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 pepper",price:1.00},
  onion:{name:"Yellow onion",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 onion",price:0.90},
  lime:{name:"Limes",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 lime",price:0.50},
@@ -178,13 +178,13 @@ const groceryMeta={
  romaine:{name:"Romaine lettuce",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 head",price:2.49},
  cabbage:{name:"Green cabbage",dept:"Produce",kind:"weight",pack:1,packUnit:"lb",label:"1 lb head",price:1.79},
  basil:{name:"Fresh basil",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:2.49},
- celery:{name:"Celery",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:2.49},
+ celery:{name:"Celery",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",eachPerUnit:8,unitNames:["stalks","stalk"],label:"1 bunch (~8 stalks)",price:2.49},
  ginger:{name:"Fresh ginger",dept:"Produce",kind:"count",pack:1,packUnit:"piece",label:"1 piece",price:1.49},
- green_onion:{name:"Green onions",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",label:"1 bunch",price:1.49},
+ green_onion:{name:"Green onions",dept:"Produce",kind:"count",pack:1,packUnit:"bunch",eachPerUnit:6,unitNames:["stalks","stalk"],label:"1 bunch (~6 stalks)",price:1.49},
  bananas:{name:"Bananas",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 banana",price:0.30},
  banana:{name:"Bananas",dept:"Produce",kind:"count",pack:1,packUnit:"each",label:"1 banana",price:0.30},
  berries:{name:"Fresh berries",dept:"Produce",kind:"volume",pack:16,packUnit:"oz",label:"1 pint",price:3.99},
- garlic:{name:"Garlic",dept:"Produce",kind:"count",pack:1,packUnit:"head",label:"1 head",price:0.70},
+ garlic:{name:"Garlic",dept:"Produce",kind:"count",pack:1,packUnit:"head",eachPerUnit:10,unitNames:["cloves","clove"],label:"1 head (~10 cloves)",price:0.70},
  eggs:{name:"Large eggs",dept:"Dairy & Eggs",kind:"count",pack:12,packUnit:"each",label:"12-count carton",price:3.49},
  black_beans:{name:"Black beans",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
  kidney_beans:{name:"Kidney beans",dept:"Canned & Dry Goods",kind:"can",pack:1,packUnit:"can",label:"15 oz can",price:0.99},
@@ -203,7 +203,7 @@ const groceryMeta={
  pasta:{name:"Pasta",dept:"Pantry",kind:"weight",pack:16,packUnit:"oz",label:"16 oz box",price:1.49},
  noodles:{name:"Asian-style noodles",dept:"Pantry",kind:"weight",pack:16,packUnit:"oz",label:"16 oz package",price:2.49},
  oats:{name:"Old-fashioned oats",dept:"Pantry",kind:"weight",pack:18,packUnit:"oz",label:"18 oz container",price:2.49},
- bread:{name:"Sandwich bread",dept:"Bakery",kind:"count",pack:1,packUnit:"loaf",label:"1 loaf",price:2.99},
+ bread:{name:"Sandwich bread",dept:"Bakery",kind:"count",pack:1,packUnit:"loaf",eachPerUnit:20,unitNames:["slices","slice"],label:"1 loaf (~20 slices)",price:2.99},
  tortillas:{name:"Flour tortillas",dept:"Bakery",kind:"count",pack:8,packUnit:"each",label:"8-count pack",price:2.49},
  pitas:{name:"Pita bread",dept:"Bakery",kind:"count",pack:6,packUnit:"each",label:"6-count pack",price:3.49},
  pita:{name:"Pita bread",dept:"Bakery",kind:"count",pack:6,packUnit:"each",label:"6-count pack",price:3.49},
@@ -245,7 +245,11 @@ function purchaseAmount(key,values){
   if(oz!==null&&packOz){packages=Math.max(1,Math.ceil(oz/packOz));buy=`${packages} × ${meta.label}`;needed=`${Math.round(oz*100)/100} oz`}
   else {packages=Math.max(1,Math.ceil(total/meta.pack));buy=`${packages} × ${meta.label}`}
  } else if(meta.kind==="count"){
-  packages=Math.max(1,Math.ceil(total/meta.pack));buy=meta.pack===1?`${packages} × ${meta.label}`:`${packages} × ${meta.label}`;needed=`${total} ${unit}`;
+  let countTotal=total;
+  if(meta.eachPerUnit && meta.unitNames && meta.unitNames.includes(unit)) countTotal=total/meta.eachPerUnit;
+  packages=Math.max(1,Math.ceil(countTotal/meta.pack));
+  buy=`${packages} × ${meta.label}`;
+  needed=`${total} ${unit}`;
  } else if(meta.kind==="can"||meta.kind==="packet"||meta.kind==="spice"){
   packages=Math.max(1,Math.ceil(total));buy=`${packages} × ${meta.label}`;
  } else if(meta.kind==="volume"||meta.kind==="jar"||meta.kind==="carton"){
@@ -269,8 +273,8 @@ function groceryData(){
  return groups;
 }
 function groceryTotals(groups){let total=0,count=0;for(const g of Object.values(groups))for(const x of Object.values(g)){total+=x.amount.cost||0;count+=x.amount.packages||0}return {total,count}}
-function checkedItems(){try{return JSON.parse(localStorage.getItem("mealpilot82checked")||"[]")}catch{return []}}
-function setChecked(k,v){let a=checkedItems().filter(x=>x!==k);if(v)a.push(k);localStorage.setItem("mealpilot82checked",JSON.stringify(a))}
+function checkedItems(){try{return JSON.parse(localStorage.getItem("mealpilot83checked")||"[]")}catch{return []}}
+function setChecked(k,v){let a=checkedItems().filter(x=>x!==k);if(v)a.push(k);localStorage.setItem("mealpilot83checked",JSON.stringify(a))}
 function substitutionMenu(k){let opts=substitutions[k]||[];if(!opts.length){alert("No saved substitution for this ingredient yet.");return}let labels=opts.map((x,i)=>`${i+1}. ${displayName(x)}`).join("\n");let choice=prompt(`Replace ${displayName(k)} with:\n${labels}\n\nEnter a number, or Cancel.`);if(choice===null)return;let n=+choice;if(n>=1&&n<=opts.length){state.substitutions??={};state.substitutions[k]=opts[n-1];save();show("shop")}}
 function shareGroceryList(){let groups=groceryData(),lines=["MealPilot Grocery List",""];for(const [dept,g] of Object.entries(groups)){lines.push(dept);for(const [k,x] of Object.entries(g))lines.push(`• ${displayName(k)} — Need ${x.amount.needed}; Buy ${x.amount.buy}`)}let custom=state.customGroceries||[];if(custom.length){lines.push("Custom Items");custom.forEach(x=>lines.push(`• ${x}`))}let txt=lines.join("\n");if(navigator.share){navigator.share({title:"MealPilot Grocery List",text:txt}).catch(()=>{})}else{navigator.clipboard?.writeText(txt);alert("Grocery list copied to your clipboard.")}}
 function shopView(){
